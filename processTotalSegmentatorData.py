@@ -5,9 +5,17 @@ import os
 import re
 import shutil
 
-input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
-images_folder = os.path.join(input_folder, "imagesTr")
-labels_folder = os.path.join(input_folder, "labelsTr")
+local = False
+if local:
+    input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
+    output_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
+    images_folder = os.path.join(input_folder, "imagesTr")
+    labels_folder = os.path.join(input_folder, "labelsTr")
+else:
+    input_folder = "/vol/biomedic3/kc2322/data/Totalsegmentator_dataset"
+    output_folder = "/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet/nnUNet_raw/Dataset300_Full"
+    images_folder = os.path.join(output_folder, "imagesTr")
+    labels_folder = os.path.join(output_folder, "labelsTr")
 
 segmentation_files = ["kidney_right.nii.gz", "kidney_left.nii.gz", "liver.nii.gz", "pancreas.nii.gz"]
 
@@ -51,7 +59,7 @@ def main():
             new_lab_name = "case_{}.nii.gz".format(fldr[-4:])
 
             src = os.path.join(input_folder, fldr, "ct.nii.gz")
-            dest = os.path.join(input_folder, "imagesTr", new_img_name)
+            dest = os.path.join(output_folder, "imagesTr", new_img_name)
             shutil.copy(src, dest)
 
             # Open label files and combine into one
@@ -66,11 +74,13 @@ def main():
             if np.max(lab) > len(segmentation_files):
                 print("We have label overlap!")
 
+                # Fix mis-labelled regions
+                lab[lab > 4] = 4
+
             # Save combined label file in labelsTr
             lab_nii = nib.Nifti1Image(lab.astype(np.float32), seg_nii.affine)
             nib.save(lab_nii, os.path.join(labels_folder, new_lab_name))
 
-            # Store image metadata
 
 
 if __name__ == "__main__":
