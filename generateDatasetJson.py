@@ -6,7 +6,7 @@ import os
 # argparse
 parser = argparse.ArgumentParser(description="Just an example",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-r", "--root_dir", default='/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet', help="Root directory for nnUNet")
+parser.add_argument("-r", "--root_dir", default='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet', help="Root directory for nnUNet")
 parser.add_argument("-n", "--dataset_name", default='Dataset301_Set1', help="Name of the dataset")
 parser.add_argument("-tc", "--training_cases", default=450)
 args = vars(parser.parse_args())
