@@ -82,6 +82,5 @@ def main():
             nib.save(lab_nii, os.path.join(labels_folder, new_lab_name))
 
 
-
 if __name__ == "__main__":
     main()
