@@ -25,6 +25,8 @@ echo $nnUNet_results
 # Run script to generate dataset json
 python3 generateDatasetJson.py -r $ROOT_DIR -n $DS
 
+nnUNetv2_plan_and_preprocess -d 301 -c 3d_fullres
+
 nnUNetv2_extract_fingerprint -d 301
 nnUNetv2_plan_experiment -d 301 -c 3d_fullres -np 3
 nnUNetv2_preprocess -d 301 -c 3d_fullres -np 3
