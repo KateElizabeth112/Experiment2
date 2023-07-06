@@ -27,12 +27,12 @@ echo $nnUNet_results
 
 #nnUNetv2_plan_and_preprocess -d 301 -c 3d_fullres -np 3
 
-#nnUNetv2_extract_fingerprint -d 301 -np 3
-#nnUNetv2_plan_experiment -d 301 -c 3d_fullres -np 3
-#nnUNetv2_preprocess -d 301 -c 3d_fullres -np 3
+nnUNetv2_extract_fingerprint -d 301 -np 3
+nnUNetv2_plan_experiment -d 301 -c 3d_lowres -np 3
+nnUNetv2_preprocess -d 301 -c 3d_lowres -np 3
 
 # Train
-nnUNetv2_train 301 3d_fullres 0
+nnUNetv2_train 301 3d_lowres 0
 
 # Inference
 #INPUT_FOLDER=$ROOT_DIR"nnUNet_raw/Dataset200_AMOS/imagesVaSorted"
