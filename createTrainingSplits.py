@@ -18,8 +18,8 @@ else:
     input_images_folder = os.path.join(input_folder, "imagesTr")
     input_labels_folder = os.path.join(input_folder, "labelsTr")
 
-    output_folder = "/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet"
-    splits_folder = os.path.join(output_folder, "splits")
+    output_folder = "/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet/nnUNet_raw"
+    splits_folder = os.path.join("/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet", "splits")
 
 
 def generate_sets():
@@ -100,7 +100,7 @@ def copy_images(dataset_name, ids_tr, ids_ts):
 
 
 def main():
-    generate_sets()
+    #generate_sets()
 
     # Sort the case IDs according to the sets
     # Set1
