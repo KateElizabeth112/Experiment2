@@ -78,6 +78,7 @@ def copy_images(dataset_name, ids_tr, ids_ts):
 
     # copy over the files from Training Set
     for case in list(ids_tr):
+        print("Case {}".format(case))
         img_name = "case_" + case[1:] + "_0000.nii.gz"
         lab_name = "case_" + case[1:] + ".nii.gz"
 
@@ -111,6 +112,7 @@ def main():
     ids_tr = set_1_ids["train"]
     ids_ts = set_1_ids["test"]
 
+    print("Working on Set 1....")
     copy_images("Dataset301_Set1", ids_tr, ids_ts)
 
     # Set2
@@ -121,6 +123,7 @@ def main():
     ids_tr = set_2_ids["train"]
     ids_ts = set_2_ids["test"]
 
+    print("Working on Set 1....")
     copy_images("Dataset302_Set2", ids_tr, ids_ts)
 
     # Set3
@@ -131,6 +134,7 @@ def main():
     ids_tr = set_3_ids["train"]
     ids_ts = set_3_ids["test"]
 
+    print("Working on Set 1....")
     copy_images("Dataset303_Set3", ids_tr, ids_ts)
 
 
