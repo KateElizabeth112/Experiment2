@@ -5,7 +5,7 @@ import os
 import pickle as pkl
 import shutil
 
-local = True
+local = False
 if local:
     input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet"
     input_images_folder = os.path.join(input_folder, "imagesTr")

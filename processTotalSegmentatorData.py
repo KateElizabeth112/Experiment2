@@ -45,9 +45,6 @@ def main():
     # List folders
     fldrs = os.listdir(input_folder)
 
-    for l in labs:
-        check_label(l)
-
     # Find folder sxxx
     for fldr in fldrs:
         if re.match(r"s\d{4}", fldr):
