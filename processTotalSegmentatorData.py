@@ -5,10 +5,10 @@ import os
 import re
 import shutil
 
-local = False
+local = True
 if local:
-    input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
-    output_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
+    input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet"
+    output_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet"
     images_folder = os.path.join(input_folder, "imagesTr")
     labels_folder = os.path.join(input_folder, "labelsTr")
 else:
@@ -26,7 +26,8 @@ labs = ["case_0670.nii.gz",
         "case_0889.nii.gz",
         "case_1157.nii.gz",
         "case_1024.nii.gz",
-        "case_0866.nii.gz"]
+        "case_0866.nii.gz",
+        "case_1167.nii.gz"]
 
 
 def check_label(name):
@@ -43,6 +44,9 @@ def check_label(name):
 def main():
     # List folders
     fldrs = os.listdir(input_folder)
+
+    for l in labs:
+        check_label(l)
 
     # Find folder sxxx
     for fldr in fldrs:

@@ -5,13 +5,13 @@ import os
 import pickle as pkl
 import shutil
 
-local = False
+local = True
 if local:
-    input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
+    input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet"
     input_images_folder = os.path.join(input_folder, "imagesTr")
     input_labels_folder = os.path.join(input_folder, "labelsTr")
 
-    output_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
+    output_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUnet"
     splits_folder = os.path.join(output_folder, "splits")
 else:
     input_folder = "/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet/nnUNet_raw/Dataset300_Full"
