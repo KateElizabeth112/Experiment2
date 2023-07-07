@@ -20,11 +20,11 @@ output_file = os.path.join(ROOT_DIR, "nnUNet_raw_data_base/nnUNet_raw_data/{}/da
 imagesTr_dir = os.path.join(ROOT_DIR, "nnUNet_raw_data_base/nnUNet_raw_data/{}/imagesTr".format(TASK_ID))
 imagesTs_dir = os.path.join(ROOT_DIR, "nnUNet_raw_data_base/nnUNet_raw_data/{}/imagesTs".format(TASK_ID))
 
-labels = {"background": 0,
-          "right kidney": 1,
-          "left kidney": 2,
-          "liver": 3,
-          "pancreas": 4}
+labels = {0: "background",
+          1: "right kidney",
+          2: "left kidney",
+          3: "liver",
+          4: "pancreas"}
 
 modalities = ("C")
 
