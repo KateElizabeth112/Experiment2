@@ -5,7 +5,7 @@ import os
 import re
 import shutil
 
-local = True
+local = False
 if local:
     input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet"
     output_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet"
