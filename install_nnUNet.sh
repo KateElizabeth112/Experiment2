@@ -6,10 +6,9 @@ source venv/bin/activate
 # Install pytorch
 pip3 install torch torchvision
 
-# Install nnUNet
-pip install nnunetv2
+# Install nnUNet V2
+#pip install nnunetv2
 
-# install other python packages
-pip3 install nibabel
-pip3 install numpy
-pip3 install matplotlib
+# Install nnUNet V1
+pip3 install --upgrade setuptools
+pip3 install git+https://github.com/KateElizabeth112/nnUnet.git

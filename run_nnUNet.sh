@@ -11,10 +11,10 @@ source venv/bin/activate
 
 # Set environment variables
 #ROOT_DIR='/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet/'
-ROOT_DIR='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet/'
-DS='Dataset301_Set1'
+ROOT_DIR='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNetv1/'
+DS='Task301'
 
-export nnUNet_raw=$ROOT_DIR"nnUNet_raw"
+export nnUNet_raw=$ROOT_DIR"nnUNet_raw_data_base"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
 export nnUNet_results=$ROOT_DIR"nnUNet_results"
 
@@ -23,16 +23,12 @@ echo $nnUNet_preprocessed
 echo $nnUNet_results
 
 # Run script to generate dataset json
-#python3 generateDatasetJson.py -r $ROOT_DIR -n $DS
+python3 generateDatasetJson.py -r $ROOT_DIR -n $DS -tc Task301
 
-#nnUNetv2_plan_and_preprocess -d 301 -c 2d -np 3
-
-#nnUNetv2_extract_fingerprint -d 301 -np 3
-#nnUNetv2_plan_experiment -d 301 -c 3d_lowres -np 3
-#nnUNetv2_preprocess -d 301 -c 3d_lowres -np 3
+nnUNet_plan_and_preprocess -t 301 --verify_dataset_integrity
 
 # Train
-nnUNetv2_train 301 2d 0
+#nnUNet_train 3d nnUNetTrainerV2 Task301 0 --npz
 
 # Inference
 #INPUT_FOLDER=$ROOT_DIR"nnUNet_raw/Dataset200_AMOS/imagesVaSorted"

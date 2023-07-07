@@ -1,5 +1,5 @@
 # Generate the dataset.json file
-from nnunetv2.dataset_conversion.generate_dataset_json import generate_dataset_json
+from nnunet.dataset_conversion.utils import generate_dataset_json
 import argparse
 import os
 
@@ -8,19 +8,17 @@ parser = argparse.ArgumentParser(description="Just an example",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("-r", "--root_dir", default='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet', help="Root directory for nnUNet")
 parser.add_argument("-n", "--dataset_name", default='Dataset301_Set1', help="Name of the dataset")
-parser.add_argument("-tc", "--training_cases", default=450)
+parser.add_argument("-t", "--task_id", default=None, help="ID of the task")
 args = vars(parser.parse_args())
 
 # set up variables
 ROOT_DIR = args['root_dir']
 DS_NAME = args['dataset_name']
-TC = args['training_cases']
+TASK_ID = args['task_id']
 
-output_dir = os.path.join(ROOT_DIR, "nnUNet_raw/{}".format(DS_NAME))
-imagesTr_dir = os.path.join(ROOT_DIR, "nnUNet_raw/{}/imagesTr".format(DS_NAME))
-imagesTs_dir = os.path.join(ROOT_DIR, "nnUNet_raw/{}/imagesTs".format(DS_NAME))
-
-channel_names = {0: "CT"}
+output_file = os.path.join(ROOT_DIR, "nnUNet_raw_data_base/nnUNet_raw_data/{}/dataset.json".format(TASK_ID))
+imagesTr_dir = os.path.join(ROOT_DIR, "nnUNet_raw_data_base/nnUNet_raw_data/{}/imagesTr".format(TASK_ID))
+imagesTs_dir = os.path.join(ROOT_DIR, "nnUNet_raw_data_base/nnUNet_raw_data/{}/imagesTs".format(TASK_ID))
 
 labels = {"background": 0,
           "right kidney": 1,
@@ -28,12 +26,6 @@ labels = {"background": 0,
           "liver": 3,
           "pancreas": 4}
 
-file_ending = ".nii.gz"
+modalities = ("C")
 
-generate_dataset_json(str(output_dir),
-                      channel_names,
-                      labels,
-                      int(TC),
-                      file_ending)
-
-
+generate_dataset_json(str(output_file), str(imagesTr_dir), str(imagesTs_dir), modalities, labels, DS_NAME)
