@@ -25,10 +25,10 @@ echo $nnUNet_results
 # Run script to generate dataset json
 #python3 generateDatasetJson.py -r $ROOT_DIR -n $DS -tc Task301
 
-#nnUNet_plan_and_preprocess -t 301 --verify_dataset_integrity
+nnUNet_plan_and_preprocess -t 301 --verify_dataset_integrity
 
 # Train
-nnUNet_train 3d_fullres nnUNetTrainerV2 Task301 0 --npz
+#nnUNet_train 3d_fullres nnUNetTrainerV2 Task301 0 --npz
 
 # Inference
 #INPUT_FOLDER=$ROOT_DIR"nnUNet_raw/Dataset200_AMOS/imagesVaSorted"
