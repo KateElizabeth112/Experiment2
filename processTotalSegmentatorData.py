@@ -79,7 +79,7 @@ def main():
                 lab[lab > 4] = 4
 
             # Save combined label file in labelsTr
-            lab_nii = nib.Nifti1Image(lab.astype(np.float32), seg_nii.affine)
+            lab_nii = nib.Nifti1Image(lab.astype(np.float32), img_nii.affine)
             nib.save(lab_nii, os.path.join(labels_folder, new_lab_name))
 
 
