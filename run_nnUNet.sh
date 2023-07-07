@@ -25,14 +25,14 @@ echo $nnUNet_results
 # Run script to generate dataset json
 #python3 generateDatasetJson.py -r $ROOT_DIR -n $DS
 
-#nnUNetv2_plan_and_preprocess -d 301 -c 3d_fullres -np 3
+nnUNetv2_plan_and_preprocess -d 301 -c 2d -np 3
 
 #nnUNetv2_extract_fingerprint -d 301 -np 3
 #nnUNetv2_plan_experiment -d 301 -c 3d_lowres -np 3
 #nnUNetv2_preprocess -d 301 -c 3d_lowres -np 3
 
 # Train
-nnUNetv2_train 301 3d_lowres 0
+#nnUNetv2_train 301 3d_lowres 0
 
 # Inference
 #INPUT_FOLDER=$ROOT_DIR"nnUNet_raw/Dataset200_AMOS/imagesVaSorted"
