@@ -14,9 +14,9 @@ source venv/bin/activate
 ROOT_DIR='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNetv1/'
 DS='Task301'
 
-export nnUNet_raw=$ROOT_DIR"nnUNet_raw_data_base"
+export nnUNet_raw_data_base=$ROOT_DIR"nnUNet_raw_data_base"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
-export nnUNet_results=$ROOT_DIR"RESULTS_FOLDER"
+export RESULTS_FOLDER=$ROOT_DIR"RESULTS_FOLDER"
 
 echo $nnUNet_raw
 echo $nnUNet_preprocessed
