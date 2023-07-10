@@ -12,7 +12,7 @@ source venv/bin/activate
 # Set environment variables
 #ROOT_DIR='/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet/'
 ROOT_DIR='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNetv1/'
-DS='Task301'
+TASK='Task301'
 
 export nnUNet_raw_data_base=$ROOT_DIR"nnUNet_raw_data_base"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
@@ -37,4 +37,4 @@ OUTPUT_FOLDER=$ROOT_DIR"inference/Task301/fold0"
 echo $INPUT_FOLDER
 echo $OUTPUT_FOLDER
 
-nnUNet_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -d 301 -c 2d -f 0 --verbose
+nnUNet_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -t $TASK -m 2d -f 0
