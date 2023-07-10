@@ -32,7 +32,7 @@ echo $RESULTS_FOLDER
 
 # Inference
 INPUT_FOLDER=$ROOT_DIR"nnUNet_raw_data_base/nnUNet_raw_data/Task301/imagesTs"
-OUTPUT_FOLDER=$ROOT_ROOT"inference/Task301/fold0"
+OUTPUT_FOLDER=$ROOT_DIR"inference/Task301/fold0"
 
 echo $INPUT_FOLDER
 echo $OUTPUT_FOLDER
