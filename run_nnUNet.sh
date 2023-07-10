@@ -12,7 +12,7 @@ source venv/bin/activate
 # Set environment variables
 #ROOT_DIR='/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet/'
 ROOT_DIR='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNetv1/'
-TASK='Task301'
+TASK='Task302'
 
 export nnUNet_raw_data_base=$ROOT_DIR"nnUNet_raw_data_base"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
@@ -23,18 +23,18 @@ echo $nnUNet_preprocessed
 echo $RESULTS_FOLDER
 
 # Run script to generate dataset json
-#python3 generateDatasetJson.py -r $ROOT_DIR -n $DS -tc Task301
+python3 generateDatasetJson.py -r $ROOT_DIR -n $DS -tc Task301
 
-#nnUNet_plan_and_preprocess -t 301 --verify_dataset_integrity
+nnUNet_plan_and_preprocess -t 302 --verify_dataset_integrity
 
 # Train
-#nnUNet_train 2d nnUNetTrainerV2 Task301 0 --npz
+nnUNet_train 2d nnUNetTrainerV2 Task302 0 --npz
 
 # Inference
-INPUT_FOLDER=$ROOT_DIR"nnUNet_raw_data_base/nnUNet_raw_data/Task301/imagesTs"
-OUTPUT_FOLDER=$ROOT_DIR"inference/Task301/fold0"
+#INPUT_FOLDER=$ROOT_DIR"nnUNet_raw_data_base/nnUNet_raw_data/Task301/imagesTs"
+#OUTPUT_FOLDER=$ROOT_DIR"inference/Task301/fold0"
 
-echo $INPUT_FOLDER
-echo $OUTPUT_FOLDER
+#echo $INPUT_FOLDER
+#echo $OUTPUT_FOLDER
 
-nnUNet_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -t $TASK -m 2d -f 0
+#nnUNet_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -t $TASK -m 2d -f 0
