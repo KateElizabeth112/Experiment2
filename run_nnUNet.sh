@@ -18,9 +18,9 @@ export nnUNet_raw_data_base=$ROOT_DIR"nnUNet_raw_data_base"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
 export RESULTS_FOLDER=$ROOT_DIR"RESULTS_FOLDER"
 
-echo $nnUNet_raw
+echo $nnUNet_raw_data_base
 echo $nnUNet_preprocessed
-echo $nnUNet_results
+echo $RESULTS_FOLDER
 
 # Run script to generate dataset json
 #python3 generateDatasetJson.py -r $ROOT_DIR -n $DS -tc Task301
@@ -28,13 +28,13 @@ echo $nnUNet_results
 #nnUNet_plan_and_preprocess -t 301 --verify_dataset_integrity
 
 # Train
-nnUNet_train 3d_fullres nnUNetTrainerV2 Task301 0 --npz
+#nnUNet_train 2d nnUNetTrainerV2 Task301 0 --npz
 
 # Inference
-#INPUT_FOLDER=$ROOT_DIR"nnUNet_raw/Dataset200_AMOS/imagesVaSorted"
-#OUTPUT_FOLDER=$ROOT_ROOT"inference/preds"
+INPUT_FOLDER=$ROOT_DIR"nnUNet_raw_data_base/nnUNet_raw_data/Task301/imagesTs"
+OUTPUT_FOLDER=$ROOT_ROOT"inference/Task301/fold0"
 
-#echo $INPUT_FOLDER
-#echo $OUTPUT_FOLDER
+echo $INPUT_FOLDER
+echo $OUTPUT_FOLDER
 
-#nnUNetv2_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -d 200 -c 2d -f 0 --verbose
+nnUNet_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -d 301 -c 2d -f 0 --verbose
