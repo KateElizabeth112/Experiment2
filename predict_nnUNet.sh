@@ -29,4 +29,4 @@ OUTPUT_FOLDER=$ROOT_DIR"inference/"$TASK"/fold0"
 echo $INPUT_FOLDER
 echo $OUTPUT_FOLDER
 
-nnUNet_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -t $TASK -m 2d -f 0
+nnUNet_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -t $TASK -m 2d -chk model_best
