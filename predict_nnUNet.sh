@@ -22,11 +22,11 @@ echo $nnUNet_raw_data_base
 echo $nnUNet_preprocessed
 echo $RESULTS_FOLDER
 
-# Run script to generate dataset json
-python3 generateDatasetJson.py -r $ROOT_DIR -n $DS -tc Task301
+# Inference
+INPUT_FOLDER=$ROOT_DIR"nnUNet_raw_data_base/nnUNet_raw_data/Task301/imagesTs"
+OUTPUT_FOLDER=$ROOT_DIR"inference/Task301/fold0"
 
-nnUNet_plan_and_preprocess -t 302 --verify_dataset_integrity
+echo $INPUT_FOLDER
+echo $OUTPUT_FOLDER
 
-# Train
-nnUNet_train 2d nnUNetTrainerV2 Task302 0 --npz
-
+nnUNet_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -t $TASK -m 2d -f 0 -verbose
