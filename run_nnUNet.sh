@@ -12,7 +12,7 @@ source venv/bin/activate
 # Set environment variables
 #ROOT_DIR='/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet/'
 ROOT_DIR='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNetv1/'
-TASK='Task303'
+TASK='Task301'
 
 export nnUNet_raw_data_base=$ROOT_DIR"nnUNet_raw_data_base"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
@@ -24,12 +24,21 @@ echo $RESULTS_FOLDER
 
 # Run script to generate dataset json
 echo "Generating dataset..."
-python3 generateDatasetJson.py -r $ROOT_DIR -n $DS -tc Task301
+#python3 generateDatasetJson.py -r $ROOT_DIR -n $DS -tc Task301
 
 echo "Planning and precprocessing..."
-nnUNet_plan_and_preprocess -t 303 --verify_dataset_integrity
+#nnUNet_plan_and_preprocess -t 301 --verify_dataset_integrity
 
 # Train
 echo "Training..."
-nnUNet_train 2d nnUNetTrainerV2 $TASK 0 --npz
+echo "Fold 1"
+nnUNet_train 2d nnUNetTrainerV2 $TASK 1
 
+echo "Fold 2"
+nnUNet_train 2d nnUNetTrainerV2 $TASK 2
+
+echo "Fold 3"
+nnUNet_train 2d nnUNetTrainerV2 $TASK 3
+
+echo "Fold 4"
+nnUNet_train 2d nnUNetTrainerV2 $TASK 4
