@@ -11,4 +11,4 @@ pip3 install torch torchvision
 
 # Install nnUNet V1
 pip3 install --upgrade setuptools
-pip3 install git+https://github.com/KateElizabeth112/nnUnet.git
+pip3 install https://github.com/MIC-DKFZ/nnUNet/tree/nnunetv1/nnunet

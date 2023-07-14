@@ -3,8 +3,9 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import pickle as pkl
 
-working_dir = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
+working_dir = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet"
 
 def main():
     ts_meta = pd.read_csv(os.path.join(working_dir, "meta.csv"), sep=";")
@@ -22,6 +23,17 @@ def main():
     # Split by gender
     ts_meta_m = ts_meta[ts_meta["gender"] == "m"]
     ts_meta_f = ts_meta[ts_meta["gender"] == "f"]
+
+    # save
+    ts_meta_m.to_csv(os.path.join(working_dir, "meta_m.csv"), index=False)
+    ts_meta_f.to_csv(os.path.join(working_dir, "meta_f.csv"), index=False)
+
+    idx_men = list(ts_meta_m["image_id"].values)
+    idx_women = list(ts_meta_f["image_id"].values)
+
+    f = open(os.path.join(working_dir, "case_ids.pkl"), "wb")
+    pkl.dump([idx_men, idx_women], f)
+    f.close()
 
     num_m = ts_meta_m.shape[0]
     num_f = ts_meta_f.shape[0]
