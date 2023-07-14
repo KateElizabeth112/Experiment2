@@ -12,7 +12,7 @@ source venv/bin/activate
 # Set environment variables
 #ROOT_DIR='/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet/'
 ROOT_DIR='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNetv1/'
-TASK='Task301'
+TASK='Task303'
 
 export nnUNet_raw_data_base=$ROOT_DIR"nnUNet_raw_data_base"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
