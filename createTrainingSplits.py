@@ -22,26 +22,52 @@ else:
     splits_folder = os.path.join("/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet", "splits")
 
 
+tr_size = 338
+tr_size_half = tr_size / 2
+ts_size_half = 50
+
 def generate_sets():
     # Extract relevant meta data and create numpy arrays of male and female IDs
     meta = pd.read_csv(os.path.join(input_folder, "meta.csv"), sep=";")
     ids_m = np.array(meta[meta["gender"] == "m"]["image_id"].values)
     ids_f = np.array(meta[meta["gender"] == "f"]["image_id"].values)
 
+    # open the no foreground images and sort into male and female ids
+    f = open(os.path.join(input_folder, "no_fg_ids.pkl"), "rb")
+    no_foreground_list = pkl.load(f)
+    f.close()
+
+    no_fg_m = []
+    no_fg_f = []
+    for case in list(no_foreground_list):
+        if case in ids_m:
+            # add to the no fg list
+            no_fg_m.append(case)
+
+            # remove from list of useable ids
+            ids_m = np.delete(ids_m, np.where(ids_m == case))
+        else:
+            # add to the no fg list
+            no_fg_f.append(case)
+
+            # remove from list of useable ids
+            ids_f = np.delete(ids_f, np.where(ids_f == case))
+
+
     # randomly shuffle indices
     np.random.shuffle(ids_m)
     np.random.shuffle(ids_f)
 
-    ids_tr_m = ids_m[:450]
-    ids_ts_m = ids_m[450:499]
-    ids_tr_f = ids_f[:450]
-    ids_ts_f = ids_f[450:]
+    ids_tr_m = ids_m[:tr_size]
+    ids_ts_m = ids_m[tr_size:tr_size + ts_size_half]
+    ids_tr_f = ids_f[:tr_size]
+    ids_ts_f = ids_f[tr_size:]
 
     ids_ts = np.concatenate((ids_ts_f, ids_ts_m), axis=0)
 
     # Set 1 train: 225 men, 225 women
     # Set 1 test: 49 men, 49 women
-    ids_tr = np.concatenate((ids_tr_f[:225], ids_tr_m[:225]), axis=0)
+    ids_tr = np.concatenate((ids_tr_f[:int(tr_size / 2)], ids_tr_m[:int(tr_size / 2)]), axis=0)
 
     set_1_ids = {"train": ids_tr, "test": ids_ts}
     f = open(os.path.join(splits_folder, "set1_splits.pkl"), "wb")

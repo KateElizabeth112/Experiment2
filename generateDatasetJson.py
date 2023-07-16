@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(description="Just an example",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("-r", "--root_dir", default='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNetv1', help="Root directory for nnUNet")
 parser.add_argument("-n", "--dataset_name", default='TotalSegmentator', help="Name of the dataset")
-parser.add_argument("-t", "--task_id", default="Task603_Men", help="ID of the task")
+parser.add_argument("-t", "--task_id", default="Task601_Mixed", help="ID of the task")
 args = vars(parser.parse_args())
 
 # set up variables
