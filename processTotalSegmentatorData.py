@@ -45,6 +45,9 @@ def main():
     # List folders
     fldrs = os.listdir(input_folder)
 
+    # Debug
+    no_foreground_counter = 0
+
     # Find folder sxxx
     for fldr in fldrs:
         if re.match(r"s\d{4}", fldr):
@@ -78,9 +81,17 @@ def main():
                 # Fix mis-labelled regions
                 lab[lab > 4] = 4
 
+            # Check that we have labels for at least one foreground region
+            if np.unique(lab).shape[0] == 1:
+                no_foreground_counter +=1
+                print("Background only")
+
+
             # Save combined label file in labelsTr
             lab_nii = nib.Nifti1Image(lab.astype(np.float32), img_nii.affine)
             nib.save(lab_nii, os.path.join(labels_folder, new_lab_name))
+
+    print("Number of images with no foreground: {}".format(no_foreground_counter))
 
 
 if __name__ == "__main__":
