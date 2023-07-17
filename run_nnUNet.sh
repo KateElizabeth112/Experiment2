@@ -27,7 +27,7 @@ echo "Generating dataset..."
 #python3 generateDatasetJson.py -r $ROOT_DIR -n $DS -tc Task301
 
 echo "Planning and precprocessing..."
-nnUNet_plan_and_preprocess -t 601 --verify_dataset_integrity
+#nnUNet_plan_and_preprocess -t 601 --verify_dataset_integrity
 
 nnUNet_train 2d nnUNetTrainerV2 $TASK 0
 
