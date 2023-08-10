@@ -7,7 +7,7 @@
 #SBATCH --nodelist monal03 # SLURM node
 #SBATCH --output=slurm.%N.%j.log # Standard output and error log
 # Launch virtual environment
-source venv/bin/activate
+source /vol/biomedic3/kc2322/code/AMOS_3D/venv/bin/activate
 
 # Set environment variables
 #ROOT_DIR='/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet/'
@@ -26,4 +26,4 @@ echo $nnUNet_results
 nnUNetv2_plan_and_preprocess -d 304 --verify_dataset_integrity
 
 # Train
-nnUNetv2_train 304 3d_fullres all
+nnUNetv2_train 304 2d all
