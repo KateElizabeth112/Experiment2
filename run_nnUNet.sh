@@ -11,38 +11,19 @@ source venv/bin/activate
 
 # Set environment variables
 #ROOT_DIR='/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet/'
-ROOT_DIR='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNetv1/'
-TASK='Task603_Men'
+ROOT_DIR='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet/'
+TASK='Dataset304_Mini'
 
-export nnUNet_raw_data_base=$ROOT_DIR"nnUNet_raw_data_base"
+export nnUNet_raw=$ROOT_DIR"nnUNet_raw"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
-export RESULTS_FOLDER=$ROOT_DIR"RESULTS_FOLDER"
+export nnUNet_results=$ROOT_DIR"nnUNet_results"
 
-echo $nnUNet_raw_data_base
+echo $nnUNet_raw
 echo $nnUNet_preprocessed
-echo $RESULTS_FOLDER
+echo $nnUNet_results
 
-# Run script to generate dataset json
-echo "Generating dataset..."
-python3 generateDatasetJson.py
-
-echo "Planning and precprocessing..."
-nnUNet_plan_and_preprocess -t 603 --verify_dataset_integrity
-
-nnUNet_train 2d nnUNetTrainerV2 $TASK 0
+# Plan and preprocess data
+nnUNetv2_plan_and_preprocess -d 304 --verify_dataset_integrity
 
 # Train
-"""
-echo 'Training...'
-echo 'Fold 1'
-nnUNet_train 2d nnUNetTrainerV2 $TASK 1
-
-echo 'Fold 2'
-nnUNet_train 2d nnUNetTrainerV2 $TASK 2
-
-echo 'Fold 3'
-nnUNet_train 2d nnUNetTrainerV2 $TASK 3
-
-echo 'Fold 4'
-nnUNet_train 2d nnUNetTrainerV2 $TASK 4
-"""
+nnUNetv2_train 304 3d_fullres all
