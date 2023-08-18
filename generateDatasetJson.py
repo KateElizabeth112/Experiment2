@@ -16,6 +16,12 @@ ROOT_DIR = args['root_dir']
 DS_NAME = args['dataset_name']
 TC = args['training_cases']
 
+# print
+print("Generating dataset.json....")
+print("Root directory: {}".format(ROOT_DIR))
+print("Dataset name: {}".format(DS_NAME))
+print("Training cases: {}".format(TC))
+
 output_dir = os.path.join(ROOT_DIR, "nnUNet_raw/{}".format(DS_NAME))
 imagesTr_dir = os.path.join(ROOT_DIR, "nnUNet_raw/{}/imagesTr".format(DS_NAME))
 

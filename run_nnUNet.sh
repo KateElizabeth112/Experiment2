@@ -1,17 +1,18 @@
 #!/bin/bash
-# Example of running python script in a batch mode
-#SBATCH -c 12 # Number of CPU Cores
-#SBATCH -p gpushigh # Partition (queue)
-#SBATCH --gres gpu:1 # gpu:n, where n = number of GPUs
-#SBATCH --mem 64G # memory pool for all cores
-#SBATCH --nodelist monal03 # SLURM node
-#SBATCH --output=slurm.%N.%j.log # Standard output and error log
-# Launch virtual environment
-source /vol/biomedic3/kc2322/code/AMOS_3D/venv/bin/activate
+#PBS -l walltime=48:00:00
+#PBS -l select=1:ncpus=12:mem=64gb:ngpus=1:gpu_type=RTX6000
+#PBS -N nnUNet_AMOS
 
-# Set environment variables
-#ROOT_DIR='/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet/'
-ROOT_DIR='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet/'
+cd ${PBS_O_WORKDIR}
+
+# Launch virtual environment
+module load anaconda3/personal
+source activate nnUNetv2
+
+## Verify install:
+python -c "import torch;print('Cuda is available: ', torch.cuda.is_available())"
+
+ROOT_DIR='/rds/general/user/kc2322/home/data/TotalSegmentator/'
 TASK='Dataset301_Set1'
 
 export nnUNet_raw=$ROOT_DIR"nnUNet_raw"
@@ -21,6 +22,9 @@ export nnUNet_results=$ROOT_DIR"nnUNet_results"
 echo $nnUNet_raw
 echo $nnUNet_preprocessed
 echo $nnUNet_results
+
+# Create dataset.json
+python3 generateDatasetJson.py -r $ROOT_DIR -n $TASK -tc 338
 
 # Plan and preprocess data
 nnUNetv2_plan_and_preprocess -d 301 -c 3d_fullres -np 3 --verify_dataset_integrity
