@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -l walltime=48:00:00
 #PBS -l select=1:ncpus=12:mem=64gb:ngpus=1:gpu_type=RTX6000
-#PBS -N nnUNet_TotalSegmentator_set2
+#PBS -N nnUNet_TotalSegmentator_set3
 
 cd ${PBS_O_WORKDIR}
 
@@ -13,7 +13,7 @@ source activate nnUNetv2
 python -c "import torch;print('Cuda is available: ', torch.cuda.is_available())"
 
 ROOT_DIR='/rds/general/user/kc2322/home/data/TotalSegmentator/'
-TASK='Dataset302_Set2'
+TASK='Dataset303_Set3'
 
 export nnUNet_raw=$ROOT_DIR"nnUNet_raw"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
@@ -27,7 +27,7 @@ echo $nnUNet_results
 python3 generateDatasetJson.py -r $ROOT_DIR -n $TASK -tc 338
 
 # Plan and preprocess data
-nnUNetv2_plan_and_preprocess -d 302 -c 3d_fullres -np 3 --verify_dataset_integrity
+nnUNetv2_plan_and_preprocess -d 303 -c 3d_fullres -np 3 --verify_dataset_integrity
 
 # Train
-nnUNetv2_train 302 3d_fullres all
+nnUNetv2_train 303 3d_fullres all
