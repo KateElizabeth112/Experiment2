@@ -6,8 +6,10 @@
 cd ${PBS_O_WORKDIR}
 
 # Launch virtual environment
-module load anaconda3/personal
-source activate nnUNetv2
+#module load anaconda3/personal
+#source activate nnUNetv2
+
+source /rds/general/user/kc2322/home/code/AMOS_3D/venv/bin/activate
 
 ## Verify install:
 python -c "import torch;print('Cuda is available: ', torch.cuda.is_available())"
