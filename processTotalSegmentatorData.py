@@ -8,7 +8,7 @@ import re
 import shutil
 import SimpleITK as sitk
 
-local = True
+local = False
 if local:
     input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_raw/Totalsegmentator_dataset"
     output_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
