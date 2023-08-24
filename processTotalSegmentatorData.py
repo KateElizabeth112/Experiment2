@@ -16,7 +16,7 @@ parser.add_argument("-l", "--local", default=False, help="are we running locally
 args = vars(parser.parse_args())
 
 # set up variables
-local = args["local"]
+local = False
 
 if local:
     input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_raw/Totalsegmentator_dataset"
