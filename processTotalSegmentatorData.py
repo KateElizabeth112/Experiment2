@@ -8,8 +8,16 @@ import shutil
 import SimpleITK as sitk
 import pandas as pd
 import pickle as pkl
+import argparse
 
-local = False
+# argparse
+parser = argparse.ArgumentParser(description="Just an example",  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("-l", "--local", default=True, help="are we running locally or on hcp clusters")
+args = vars(parser.parse_args())
+
+# set up variables
+local = args["local"]
+
 if local:
     input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_raw/Totalsegmentator_dataset"
     output_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
@@ -80,7 +88,7 @@ def main():
                     dest = os.path.join(output_folder, "imagesTr", new_img_name)
                     shutil.copy(src, dest)
 
-                    # Check that we did not have any overlap of labels between different organs
+                  # Check that we did not have any overlap of labels between different organs
                     if np.max(lab_np) > len(segmentation_files):
                         print("We have label overlap!")
                         max = int(len(segmentation_files))
@@ -110,6 +118,8 @@ def main():
 
     print("Number of images with no foreground: {}".format(no_foreground_counter))
     print("Number of images with no orthonormal: {}".format(no_orthonormal_counter))
+    print("Number of files were processed successfully: {}".format(len(patients)))
+    print("Number of women: {}".format(sum(genders)))
 
     # Save lists
     info = {"patients": patients,
