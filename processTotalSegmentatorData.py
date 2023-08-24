@@ -2,11 +2,12 @@
 # TotalSegmentator data comprises an image file and a separate segmentation file for each region
 # Therefore we need to iterate over segmentation files and add them to a combined array
 import numpy as np
-import nibabel as nib
 import os
 import re
 import shutil
 import SimpleITK as sitk
+import pandas as pd
+import pickle as pkl
 
 local = False
 if local:
@@ -23,34 +24,23 @@ else:
 segmentation_files = ["kidney_right.nii.gz", "kidney_left.nii.gz", "liver.nii.gz", "pancreas.nii.gz"]
 
 
-labs = ["case_0670.nii.gz",
-        "case_1358.nii.gz",
-        "case_1124.nii.gz",
-        "case_0889.nii.gz",
-        "case_1157.nii.gz",
-        "case_1024.nii.gz",
-        "case_0866.nii.gz",
-        "case_1167.nii.gz"]
-
-
-def check_label(name):
-    lab_nii = nib.load(os.path.join(labels_folder, name))
-    lab = lab_nii.get_fdata()
-
-    # Fix mis-labelled regions
-    lab[lab > 4] = 4
-
-    lab_fixed_nii = nib.Nifti1Image(lab.astype(np.float32), lab_nii.affine)
-    nib.save(lab_fixed_nii, os.path.join(labels_folder, name))
-
-
 def main():
     # List folders
     fldrs = os.listdir(input_folder)
 
     # Debug
     no_foreground_counter = 0
+    no_foreground_list = []
     no_orthonormal_counter = 0
+    no_orthonormal_list = []
+
+    # list for patients with ok image files
+    patients = []
+    genders = []
+
+    meta = pd.read_csv(os.path.join(input_folder, "meta.csv"), sep=";")
+    ids_m = np.array(meta[meta["gender"] == "m"]["image_id"].values)
+    ids_f = np.array(meta[meta["gender"] == "f"]["image_id"].values)
 
     # Find folder sxxx
     for fldr in fldrs:
@@ -79,7 +69,7 @@ def main():
                 # Check that we have labels for at least one foreground region
                 if np.unique(lab_np).shape[0] == 1:
                     no_foreground_counter += 1
-                    print("Background only")
+                    no_foreground_list.append(fldr[-4:])
                 else:
                     # Copy and rename ct.nii.gz with name in nnUNet format
                     new_img_name = "case_{}_0000.nii.gz".format(fldr[-4:])
@@ -102,12 +92,35 @@ def main():
                     lab_sitk.CopyInformation(img_sitk)
 
                     sitk.WriteImage(lab_sitk, os.path.join(labels_folder, new_lab_name))
+
+                    # add the patient ID to a list of images with the gender
+                    # 0 = male, 1 = female
+                    patients.append(fldr[-4:])
+                    if ("s" + fldr[-4:]) in ids_m:
+                        genders.append(0)
+                    elif ("s" + fldr[-4:]) in ids_f:
+                        genders.append(1)
+                    else:
+                        print("Cannot find patient ID in metadata")
+
             except:
                 no_orthonormal_counter += 1
+                no_orthonormal_list.append(fldr[-4:])
                 continue
 
     print("Number of images with no foreground: {}".format(no_foreground_counter))
     print("Number of images with no orthonormal: {}".format(no_orthonormal_counter))
+
+    # Save lists
+    info = {"patients": patients,
+            "genders": genders,
+            "no_foreground": no_foreground_list,
+            "no_orthonormal": no_orthonormal_list}
+
+    f = open(os.path.join(output_folder, "info.pkl"), "wb")
+    pkl.dump(info, f)
+    f.close()
+
 
 if __name__ == "__main__":
     main()
