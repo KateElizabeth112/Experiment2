@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -l walltime=5:00:00
 #PBS -l select=1:ncpus=12:mem=32gb
-#PBS -N processData
+#PBS -N trainingSplits
 
 cd ${PBS_O_WORKDIR}
 
@@ -9,4 +9,4 @@ cd ${PBS_O_WORKDIR}
 module load anaconda3/personal
 source activate nnUNetv2
 
-python3 processTotalSegmentatorData.py
+python3  createTrainingSplits.py

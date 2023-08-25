@@ -6,60 +6,47 @@ import pickle as pkl
 import shutil
 
 local = False
+
 if local:
-    input_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet"
-    input_images_folder = os.path.join(input_folder, "imagesTr")
-    input_labels_folder = os.path.join(input_folder, "labelsTr")
-
-    output_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUnet"
-    splits_folder = os.path.join(output_folder, "splits")
+    root_folder = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
 else:
-    input_folder = "/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet/nnUNet_raw/Dataset300_Full"
-    input_images_folder = os.path.join(input_folder, "imagesTr")
-    input_labels_folder = os.path.join(input_folder, "labelsTr")
+    root_folder = "/rds/general/user/kc2322/home/data/TotalSegmentator/"
 
-    output_folder = "/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet/nnUNet_raw"
-    splits_folder = os.path.join("/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNet", "splits")
+input_folder = os.path.join(root_folder, "nnUNet_raw/Dataset300_Full")
+output_folder = os.path.join(root_folder, "nnUNet_raw")
+input_images_folder = os.path.join(input_folder, "imagesTr")
+input_labels_folder = os.path.join(input_folder, "labelsTr")
+splits_folder = os.path.join(root_folder, "splits")
 
 
 tr_size = 338
 tr_size_half = tr_size / 2
 ts_size_half = 50
 
-def generate_sets():
-    # Extract relevant meta data and create numpy arrays of male and female IDs
-    meta = pd.read_csv(os.path.join(input_folder, "meta.csv"), sep=";")
-    ids_m = np.array(meta[meta["gender"] == "m"]["image_id"].values)
-    ids_f = np.array(meta[meta["gender"] == "f"]["image_id"].values)
 
-    # open the no foreground images and sort into male and female ids
-    f = open(os.path.join(input_folder, "no_fg_ids.pkl"), "rb")
-    no_foreground_list = pkl.load(f)
+def generate_sets():
+    f = open(os.path.join(root_folder, "info.pkl"), "rb")
+    info = pkl.load(f)
     f.close()
 
-    no_fg_m = []
-    no_fg_f = []
-    for case in list(no_foreground_list):
-        if case in ids_m:
-            # add to the no fg list
-            no_fg_m.append(case)
+    patients = np.array(info["patients"])
+    genders = np.array(info["genders"])       # male = 0, female = 1
 
-            # remove from list of useable ids
-            ids_m = np.delete(ids_m, np.where(ids_m == case))
-        else:
-            # add to the no fg list
-            no_fg_f.append(case)
-
-            # remove from list of useable ids
-            ids_f = np.delete(ids_f, np.where(ids_f == case))
-
+    # split into male and female IDs
+    ids_m = patients[genders == 0]
+    ids_f = patients[genders == 1]
 
     # randomly shuffle indices
     np.random.shuffle(ids_m)
     np.random.shuffle(ids_f)
 
+    # define training and test set size
+    n_f = ids_f.shape[0]
+    ts_size = 100
+    tr_size = n_f - (ts_size / 2)
+
     ids_tr_m = ids_m[:tr_size]
-    ids_ts_m = ids_m[tr_size:tr_size + ts_size_half]
+    ids_ts_m = ids_m[tr_size:tr_size + (ts_size / 2)]
     ids_tr_f = ids_f[:tr_size]
     ids_ts_f = ids_f[tr_size:]
 
@@ -105,8 +92,8 @@ def copy_images(dataset_name, ids_tr, ids_ts):
     # copy over the files from Training Set
     for case in list(ids_tr):
         print("Case {}".format(case))
-        img_name = "case_" + case[1:] + "_0000.nii.gz"
-        lab_name = "case_" + case[1:] + ".nii.gz"
+        img_name = "case_" + case + "_0000.nii.gz"
+        lab_name = "case_" + case + ".nii.gz"
 
         # Copy across images
         shutil.copyfile(os.path.join(input_images_folder, img_name), os.path.join(output_imagesTr, img_name))
@@ -116,8 +103,8 @@ def copy_images(dataset_name, ids_tr, ids_ts):
 
     # copy over the files from Test Set
     for case in list(ids_ts):
-        img_name = "case_" + case[1:] + "_0000.nii.gz"
-        lab_name = "case_" + case[1:] + ".nii.gz"
+        img_name = "case_" + case + "_0000.nii.gz"
+        lab_name = "case_" + case + ".nii.gz"
 
         # Copy across images
         shutil.copyfile(os.path.join(input_images_folder, img_name), os.path.join(output_imagesTs, img_name))
@@ -127,7 +114,7 @@ def copy_images(dataset_name, ids_tr, ids_ts):
 
 
 def main():
-    #generate_sets()
+    generate_sets()
 
     # Sort the case IDs according to the sets
     # Set1
