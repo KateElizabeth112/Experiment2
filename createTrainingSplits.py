@@ -37,7 +37,7 @@ def generate_sets():
     # define training and test set size
     n_f = ids_f.shape[0]
     ts_size = 100
-    tr_size = n_f - (ts_size / 2)
+    tr_size = int(n_f - (ts_size / 2))
 
     print("Training set size: {}".format(tr_size))
     print("Test set size: {}".format(ts_size))
