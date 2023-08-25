@@ -18,14 +18,8 @@ input_images_folder = os.path.join(input_folder, "imagesTr")
 input_labels_folder = os.path.join(input_folder, "labelsTr")
 splits_folder = os.path.join(root_folder, "splits")
 
-
-tr_size = 338
-tr_size_half = tr_size / 2
-ts_size_half = 50
-
-
 def generate_sets():
-    f = open(os.path.join(root_folder, "info.pkl"), "rb")
+    f = open(os.path.join(input_folder, "info.pkl"), "rb")
     info = pkl.load(f)
     f.close()
 
