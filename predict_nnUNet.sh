@@ -1,32 +1,30 @@
 #!/bin/bash
-# Example of running python script in a batch mode
-#SBATCH -c 4 # Number of CPU Cores
-#SBATCH -p gpushigh # Partition (queue)
-#SBATCH --gres gpu:1 # gpu:n, where n = number of GPUs
-#SBATCH --mem 20G # memory pool for all cores
-#SBATCH --nodelist monal03 # SLURM node
-#SBATCH --output=slurm.%N.%j.log # Standard output and error log
+#PBS -l walltime=5:00:00
+#PBS -l select=1:ncpus=12:mem=120gb:ngpus=1:gpu_type=RTX6000
+#PBS -N nnUNet_AMOS_predict
+
+cd ${PBS_O_WORKDIR}
+
 # Launch virtual environment
-source venv/bin/activate
+module load anaconda3/personal
+source activate nnUNetv2
+
+## Verify install:
+python -c "import torch;print(torch.cuda.is_available())"
 
 # Set environment variables
-#ROOT_DIR='/Users/katecevora/Documents/PhD/data/TotalSegmentator_nnUNet/'
-ROOT_DIR='/vol/biomedic3/kc2322/data/TotalSegmentator_nnUNetv1/'
-TASK='Task303'
+ROOT_DIR='/rds/general/user/kc2322/home/data/TotalSegmentator/'
+DATASET="Dataset301_Set1"
 
-export nnUNet_raw_data_base=$ROOT_DIR"nnUNet_raw_data_base"
+export nnUNet_raw=$ROOT_DIR"nnUNet_raw"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
-export RESULTS_FOLDER=$ROOT_DIR"RESULTS_FOLDER"
-
-echo $nnUNet_raw_data_base
-echo $nnUNet_preprocessed
-echo $RESULTS_FOLDER
+export nnUNet_results=$ROOT_DIR"nnUNet_results"
 
 # Inference
-INPUT_FOLDER=$ROOT_DIR"nnUNet_raw_data_base/nnUNet_raw_data/"$TASK"/imagesTs"
-OUTPUT_FOLDER=$ROOT_DIR"inference/"$TASK"/fold0"
+INPUT_FOLDER=$ROOT_DIR"nnUNet_raw/"$DATASET"/imagesTs"
+OUTPUT_FOLDER=$ROOT_DIR"inference/"$DATASET"/all"
 
-echo $INPUT_FOLDER
-echo $OUTPUT_FOLDER
+nnUNetv2_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -d 301 -c 3d_fullres -f all
 
-nnUNet_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -t $TASK -m 2d -chk model_best
+# Run python script to evaluate results
+python3 processResults.py -d $DATASET
