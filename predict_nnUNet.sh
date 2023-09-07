@@ -14,7 +14,7 @@ python -c "import torch;print(torch.cuda.is_available())"
 
 # Set environment variables
 ROOT_DIR='/rds/general/user/kc2322/home/data/TotalSegmentator/'
-DATASET="Dataset301_Set1"
+DATASET="Dataset302_Set2"
 
 export nnUNet_raw=$ROOT_DIR"nnUNet_raw"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
@@ -24,7 +24,7 @@ export nnUNet_results=$ROOT_DIR"nnUNet_results"
 INPUT_FOLDER=$ROOT_DIR"nnUNet_raw/"$DATASET"/imagesTs"
 OUTPUT_FOLDER=$ROOT_DIR"inference/"$DATASET"/all"
 
-nnUNetv2_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -d 301 -c 3d_fullres -f all
+nnUNetv2_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -d 302 -c 3d_fullres -f all
 
 # Run python script to evaluate results
 python3 processResults.py -d $DATASET

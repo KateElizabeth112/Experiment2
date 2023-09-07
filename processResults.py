@@ -8,7 +8,7 @@ import argparse
 
 # argparse
 parser = argparse.ArgumentParser(description="Just an example",  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-t", "--task", default="Dataset301_Set1", help="Task to evaluate")
+parser.add_argument("-d", "--dataset", default="Dataset302_Set2", help="Task to evaluate")
 args = vars(parser.parse_args())
 
 # set up variables
@@ -32,6 +32,18 @@ labels = {"background": 0,
           "pancreas": 4}
 
 n_channels = int(len(labels))
+
+
+def getVolume(pred, gt):
+    # Get the organ volumes given the ground truth mask and the validation mask
+    vol_preds = []
+    vol_gts = []
+    for channel in range(n_channels):
+        vol_preds.append(np.sum(pred[pred == channel]))
+        vol_gts.append(np.sum(gt[gt == channel]))
+
+    return np.array(vol_preds), np.array(vol_gts)
+
 
 def oneHotEncode(array):
     array_dims = len(array.shape)
@@ -82,146 +94,90 @@ def multiChannelDice(pred, gt, channels):
 
 
 def calculateMetrics():
-    # get a list of male and female IDs
-    f = open(os.path.join(root_dir, "splits", "set1_splits.pkl"), "rb")
-    set_1_ids = pkl.load(f)
-    f.close()
-
-    ids_ts = set_1_ids["test"]
-    n_ids = len(ids_ts)
-    idx_women = ids_ts[0:int(n_ids / 2)]
-    idx_men = ids_ts[int(n_ids / 2):]
-
-    dice_men = []
-    dice_women = []
-    hd_men = []
-    hd_women = []
-
-    cases = os.listdir(preds_dir)
-    for case in cases:
-        if case.endswith(".nii.gz"):
-            print(case)
-
-            pred = nib.load(os.path.join(preds_dir, case)).get_fdata()
-            gt = nib.load(os.path.join(gt_dir, case)).get_fdata()
-
-            if np.unique(gt).sum() == 0:
-                print("Only background")
-
-            # Get Dice and NSD
-            dice = multiChannelDice(pred, gt, n_channels)
-
-            hd = computeHDDIstance(pred, gt)
-
-            if int(case[5:9]) in idx_women:
-                dice_women.append(dice)
-                hd_women.append(hd)
-            elif int(case[5:9]) in idx_men:
-                dice_men.append(dice)
-                hd_men.append(hd)
-            else:
-                print("Not in list")
-
-    print("Number of men: {}".format(len(dice_men)))
-    print("Number of women: {}".format(len(dice_women)))
-
-    dice_men = np.array(dice_men)
-    dice_women = np.array(dice_women)
-    hd_men = np.array(hd_men)
-    hd_women = np.array(hd_women)
-
-    f = open(os.path.join(preds_dir, "dice_and_hd.pkl"), "wb")
-    pkl.dump({"dice_men": dice_men,
-              "dice_women": dice_women,
-              "hd_men": hd_men,
-              "hd_women": hd_women}, f)
-    f.close()
-
-
-def printResults():
-    datasets = ["Dataset701_Set1", "Dataset702_Set2", "Dataset703_Set3"]
-
-    # lists to store the results for each dataset
-    av_dice_men = []
-    std_dice_men = []
-    av_hd_men = []
-    std_hd_men = []
-
-    av_dice_women = []
-    std_dice_women = []
-    av_hd_women = []
-    std_hd_women = []
-
-    for ds in datasets:
-        preds_dir = os.path.join(root_dir, "inference", ds, fold)
-        f = open(os.path.join(preds_dir, "dice_and_hd.pkl"), "rb")
-        metrics = pkl.load(f)
+    def calculateMetrics():
+        # get a list of male and female IDs
+        f = open(os.path.join(root_dir, "splits", "set1_splits.pkl"), "rb")
+        set_1_ids = pkl.load(f)
         f.close()
 
-        # Dice
-        av_dice_men.append(np.nanmean(metrics["dice_men"], axis=1))
-        std_dice_men.append(np.nanstd(metrics["dice_men"], axis=1))
-        av_dice_women.append(np.nanmean(metrics["dice_women"], axis=1))
-        std_dice_women.append(np.nanstd(metrics["dice_women"], axis=1))
+        ids_ts = set_1_ids["test"]
+        n_ids = len(ids_ts)
+        idx_women = ids_ts[0:int(n_ids / 2)]
+        idx_men = ids_ts[int(n_ids / 2):]
 
-        # Hausdorff
-        hd_men = np.squeeze(metrics["hd_men"])
-        hd_women = np.squeeze(metrics["hd_women"])
+        dice_men = []
+        dice_women = []
 
-        # Replace infs with nans so we can compute average using nanmean
-        hd_men[hd_men == np.inf] = np.nan
-        hd_women[hd_women == np.inf] = np.nan
+        hd_men = []
+        hd_women = []
 
-        av_hd_men.append(np.nanmean(hd_men, axis=1))
-        std_hd_men.append(np.nanstd(hd_men, axis=1))
-        av_hd_women.append(np.nanmean(hd_women, axis=1))
-        std_hd_women.append(np.nanstd(hd_women, axis=1))
+        vol_pred_men = []
+        vol_pred_women = []
 
-    organs = list(labels.keys())
-    n_channels = len(labels)
+        vol_gt_men = []
+        vol_gt_women = []
 
-    # First print out the information for men
-    for i in range(n_channels):
-        print(organs[i] + " & {0:.3f} ({1:.3f}) & {2:.3f} ({3:.3f}) & {4:.3f} ({5:.3f})".format(av_dice_men[0][i],
-                                                                                                std_dice_men[0][i],
-                                                                                                av_dice_men[1][i],
-                                                                                                std_dice_men[1][i],
-                                                                                                av_dice_men[2][i],
-                                                                                                std_dice_men[2][
-                                                                                                    i]) + r" \\")
+        cases = os.listdir(preds_dir)
+        for case in cases:
+            if case.endswith(".nii.gz"):
+                print(case)
 
-    print('')
+                pred = nib.load(os.path.join(preds_dir, case)).get_fdata()
+                gt = nib.load(os.path.join(gt_dir, case)).get_fdata()
 
-    # Then print out the information for women
-    for i in range(n_channels):
-        print(organs[i] + " & {0:.3f} ({1:.3f}) & {2:.3f} ({3:.3f}) & {4:.3f} ({5:.3f})".format(av_dice_women[0][i],
-                                                                                                std_dice_women[0][i],
-                                                                                                av_dice_women[1][i],
-                                                                                                std_dice_women[1][i],
-                                                                                                av_dice_women[2][i],
-                                                                                                std_dice_women[2][
-                                                                                                    i]) + r" \\")
+                if np.unique(gt).sum() == 0:
+                    print("Only background")
 
-    print('')
+                # Get Dice and NSD and volumes
+                dice = multiChannelDice(pred, gt, n_channels)
 
-    # First print out the information for men
-    for i in range(n_channels):
-        print(organs[i] + " & {0:.3f} & {1:.3f} & {2:.3f}".format(av_dice_men[0][i],
-                                                                  av_dice_men[1][i],
-                                                                  av_dice_men[2][i]) + r" \\")
+                hd = computeHDDIstance(pred, gt)
 
-    print('')
+                vol_pred, vol_gt = getVolume(pred, gt)
 
-    # Then print out the information for women
-    for i in range(n_channels):
-        print(organs[i] + " & {0:.3f} & {1:.3f} & {2:.3f}".format(av_dice_women[0][i],
-                                                                  av_dice_women[1][i],
-                                                                  av_dice_women[2][i]) + r" \\")
+                if int(case[5:9]) in idx_women:
+                    dice_women.append(dice)
+                    hd_women.append(hd)
+                    vol_pred_women.append(vol_pred)
+                    vol_gt_women.append(vol_gt)
+                elif int(case[5:9]) in idx_men:
+                    dice_men.append(dice)
+                    hd_men.append(hd)
+                    vol_pred_men.append(vol_pred)
+                    vol_gt_men.append(vol_gt)
+                else:
+                    print("Not in list")
+
+        print("Number of men: {}".format(len(dice_men)))
+        print("Number of women: {}".format(len(dice_women)))
+
+        dice_men = np.array(dice_men)
+        dice_women = np.array(dice_women)
+
+        # hd_men = np.array(hd_men)
+        # hd_women = np.array(hd_women)
+
+        vol_pred_men = np.array(vol_pred_men)
+        vol_pred_women = np.array(vol_pred_women)
+
+        vol_gt_men = np.array(vol_gt_men)
+        vol_gt_women = np.array(vol_gt_women)
+
+        f = open(os.path.join(preds_dir, "dice_and_hd.pkl"), "wb")
+        pkl.dump({"dice_men": dice_men,
+                  "dice_women": dice_women,
+                  "hd_men": hd_men,
+                  "hd_women": hd_women,
+                  "vol_pred_men": vol_pred_men,
+                  "vol_pred_women": vol_pred_women,
+                  "vol_gt_women": vol_gt_women,
+                  "vol_gt_men": vol_gt_men}, f)
+        f.close()
 
 
 def main():
     calculateMetrics()
-    printResults()
+
 
 
 if __name__ == "__main__":
