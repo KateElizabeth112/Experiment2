@@ -8,13 +8,13 @@ import argparse
 
 # argparse
 parser = argparse.ArgumentParser(description="Just an example",  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-d", "--dataset", default="Dataset302_Set2", help="Task to evaluate")
+parser.add_argument("-d", "--dataset", default="Dataset301_Set1", help="Task to evaluate")
 args = vars(parser.parse_args())
 
 # set up variables
-task = args["task"]
+task = args["dataset"]
 
-local = False
+local = True
 if local:
     root_dir = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
 else:
@@ -94,85 +94,85 @@ def multiChannelDice(pred, gt, channels):
 
 
 def calculateMetrics():
-    def calculateMetrics():
-        # get a list of male and female IDs
-        f = open(os.path.join(root_dir, "splits", "set1_splits.pkl"), "rb")
-        set_1_ids = pkl.load(f)
-        f.close()
 
-        ids_ts = set_1_ids["test"]
-        n_ids = len(ids_ts)
-        idx_women = ids_ts[0:int(n_ids / 2)]
-        idx_men = ids_ts[int(n_ids / 2):]
+    # get a list of male and female IDs
+    f = open(os.path.join(root_dir, "splits", "set1_splits.pkl"), "rb")
+    set_1_ids = pkl.load(f)
+    f.close()
 
-        dice_men = []
-        dice_women = []
+    ids_ts = set_1_ids["test"]
+    n_ids = len(ids_ts)
+    idx_women = ids_ts[0:int(n_ids / 2)]
+    idx_men = ids_ts[int(n_ids / 2):]
 
-        hd_men = []
-        hd_women = []
+    dice_men = []
+    dice_women = []
 
-        vol_pred_men = []
-        vol_pred_women = []
+    hd_men = []
+    hd_women = []
 
-        vol_gt_men = []
-        vol_gt_women = []
+    vol_pred_men = []
+    vol_pred_women = []
 
-        cases = os.listdir(preds_dir)
-        for case in cases:
-            if case.endswith(".nii.gz"):
-                print(case)
+    vol_gt_men = []
+    vol_gt_women = []
 
-                pred = nib.load(os.path.join(preds_dir, case)).get_fdata()
-                gt = nib.load(os.path.join(gt_dir, case)).get_fdata()
+    cases = os.listdir(preds_dir)
+    for case in cases:
+        if case.endswith(".nii.gz"):
+            print(case)
 
-                if np.unique(gt).sum() == 0:
-                    print("Only background")
+            pred = nib.load(os.path.join(preds_dir, case)).get_fdata()
+            gt = nib.load(os.path.join(gt_dir, case)).get_fdata()
 
-                # Get Dice and NSD and volumes
-                dice = multiChannelDice(pred, gt, n_channels)
+            if np.unique(gt).sum() == 0:
+                print("Only background")
 
-                hd = computeHDDIstance(pred, gt)
+            # Get Dice and NSD and volumes
+            dice = multiChannelDice(pred, gt, n_channels)
 
-                vol_pred, vol_gt = getVolume(pred, gt)
+            hd = computeHDDIstance(pred, gt)
 
-                if int(case[5:9]) in idx_women:
-                    dice_women.append(dice)
-                    hd_women.append(hd)
-                    vol_pred_women.append(vol_pred)
-                    vol_gt_women.append(vol_gt)
-                elif int(case[5:9]) in idx_men:
-                    dice_men.append(dice)
-                    hd_men.append(hd)
-                    vol_pred_men.append(vol_pred)
-                    vol_gt_men.append(vol_gt)
-                else:
-                    print("Not in list")
+            vol_pred, vol_gt = getVolume(pred, gt)
 
-        print("Number of men: {}".format(len(dice_men)))
-        print("Number of women: {}".format(len(dice_women)))
+            if int(case[5:9]) in idx_women:
+                dice_women.append(dice)
+                hd_women.append(hd)
+                vol_pred_women.append(vol_pred)
+                vol_gt_women.append(vol_gt)
+            elif int(case[5:9]) in idx_men:
+                dice_men.append(dice)
+                hd_men.append(hd)
+                vol_pred_men.append(vol_pred)
+                vol_gt_men.append(vol_gt)
+            else:
+                print("Not in list")
 
-        dice_men = np.array(dice_men)
-        dice_women = np.array(dice_women)
+    print("Number of men: {}".format(len(dice_men)))
+    print("Number of women: {}".format(len(dice_women)))
 
-        # hd_men = np.array(hd_men)
-        # hd_women = np.array(hd_women)
+    dice_men = np.array(dice_men)
+    dice_women = np.array(dice_women)
 
-        vol_pred_men = np.array(vol_pred_men)
-        vol_pred_women = np.array(vol_pred_women)
+    # hd_men = np.array(hd_men)
+    # hd_women = np.array(hd_women)
 
-        vol_gt_men = np.array(vol_gt_men)
-        vol_gt_women = np.array(vol_gt_women)
+    vol_pred_men = np.array(vol_pred_men)
+    vol_pred_women = np.array(vol_pred_women)
 
-        f = open(os.path.join(preds_dir, "dice_and_hd.pkl"), "wb")
-        pkl.dump({"dice_men": dice_men,
-                  "dice_women": dice_women,
-                  "hd_men": hd_men,
-                  "hd_women": hd_women,
-                  "vol_pred_men": vol_pred_men,
-                  "vol_pred_women": vol_pred_women,
-                  "vol_gt_women": vol_gt_women,
-                  "vol_gt_men": vol_gt_men}, f)
-        f.close()
+    vol_gt_men = np.array(vol_gt_men)
+    vol_gt_women = np.array(vol_gt_women)
+
+    f = open(os.path.join(preds_dir, "dice_and_hd.pkl"), "wb")
+    pkl.dump({"dice_men": dice_men,
+              "dice_women": dice_women,
+              "hd_men": hd_men,
+              "hd_women": hd_women,
+              "vol_pred_men": vol_pred_men,
+              "vol_pred_women": vol_pred_women,
+              "vol_gt_women": vol_gt_women,
+              "vol_gt_men": vol_gt_men}, f)
+    f.close()
 
 
 def main():

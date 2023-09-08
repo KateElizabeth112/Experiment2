@@ -24,7 +24,7 @@ export nnUNet_results=$ROOT_DIR"nnUNet_results"
 INPUT_FOLDER=$ROOT_DIR"nnUNet_raw/"$DATASET"/imagesTs"
 OUTPUT_FOLDER=$ROOT_DIR"inference/"$DATASET"/all"
 
-nnUNetv2_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -d 303 -c 3d_fullres -f all
+#nnUNetv2_predict -i $INPUT_FOLDER -o $OUTPUT_FOLDER -d 303 -c 3d_fullres -f all
 
 # Run python script to evaluate results
 python3 processResults.py -d $DATASET
