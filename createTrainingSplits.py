@@ -126,7 +126,7 @@ def main():
         ids_tr = ids["train"]
         ids_ts = ids["test"]
 
-        print("Working on Set {}....".format[j])
+        print("Working on Set {}....".format(j))
         copy_images(output_datasets[j], ids_tr, ids_ts)
 
 
