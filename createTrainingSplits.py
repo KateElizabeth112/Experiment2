@@ -18,6 +18,10 @@ input_images_folder = os.path.join(input_folder, "imagesTr")
 input_labels_folder = os.path.join(input_folder, "labelsTr")
 splits_folder = os.path.join(root_folder, "splits")
 
+output_datasets = ["Dataset401_Set1", "Dataset402_Set2", "Dataset403_Set3"]
+splits = ["set401_splits.pkl", "set402_splits.pkl", "set403_splits.pkl"]
+
+
 def generate_sets():
     f = open(os.path.join(input_folder, "info.pkl"), "rb")
     info = pkl.load(f)
@@ -54,21 +58,21 @@ def generate_sets():
     ids_tr = np.concatenate((ids_tr_f[:int(tr_size / 2)], ids_tr_m[:int(tr_size / 2)]), axis=0)
 
     set_1_ids = {"train": ids_tr, "test": ids_ts}
-    f = open(os.path.join(splits_folder, "set1_splits.pkl"), "wb")
+    f = open(os.path.join(splits_folder, splits[0]), "wb")
     pkl.dump(set_1_ids, f)
     f.close()
 
     # Set 2 train: 0 men, 450 women
     # Set 2 test: 49 men, 49 women
     set_2_ids = {"train": ids_tr_f, "test": ids_ts}
-    f = open(os.path.join(splits_folder, "set2_splits.pkl"), "wb")
+    f = open(os.path.join(splits_folder, splits[1]), "wb")
     pkl.dump(set_2_ids, f)
     f.close()
 
     # Set 3 train: 450 men, 0 women
     # Set 3 test: 49 men, 49 women
     set_3_ids = {"train": ids_tr_m, "test": ids_ts}
-    f = open(os.path.join(splits_folder, "set3_splits.pkl"), "wb")
+    f = open(os.path.join(splits_folder, splits[2]), "wb")
     pkl.dump(set_3_ids, f)
     f.close()
 
@@ -114,38 +118,17 @@ def main():
     generate_sets()
 
     # Sort the case IDs according to the sets
-    # Set1
-    f = open(os.path.join(splits_folder, "set1_splits.pkl"), "rb")
-    set_1_ids = pkl.load(f)
-    f.close()
+    for j in range(3):
+        f = open(os.path.join(splits_folder, splits[j]), "rb")
+        ids = pkl.load(f)
+        f.close()
 
-    ids_tr = set_1_ids["train"]
-    ids_ts = set_1_ids["test"]
+        ids_tr = ids["train"]
+        ids_ts = ids["test"]
 
-    print("Working on Set 1....")
-    copy_images("Dataset301_Set1", ids_tr, ids_ts)
+        print("Working on Set {}....".format[j])
+        copy_images(output_datasets[j], ids_tr, ids_ts)
 
-    # Set2
-    f = open(os.path.join(splits_folder, "set2_splits.pkl"), "rb")
-    set_2_ids = pkl.load(f)
-    f.close()
-
-    ids_tr = set_2_ids["train"]
-    ids_ts = set_2_ids["test"]
-
-    print("Working on Set 1....")
-    copy_images("Dataset302_Set2", ids_tr, ids_ts)
-
-    # Set3
-    f = open(os.path.join(splits_folder, "set3_splits.pkl"), "rb")
-    set_3_ids = pkl.load(f)
-    f.close()
-
-    ids_tr = set_3_ids["train"]
-    ids_ts = set_3_ids["test"]
-
-    print("Working on Set 1....")
-    copy_images("Dataset303_Set3", ids_tr, ids_ts)
 
 
 if __name__ == "__main__":
