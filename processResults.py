@@ -3,12 +3,14 @@ import numpy as np
 import nibabel as nib
 import os
 import pickle as pkl
+
+import pandas as pd
 from monai.metrics import compute_hausdorff_distance
 import argparse
 
 # argparse
 parser = argparse.ArgumentParser(description="Just an example",  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-d", "--dataset", default="Dataset301_Set1", help="Task to evaluate")
+parser.add_argument("-d", "--dataset", default="Dataset303_Set3", help="Task to evaluate")
 args = vars(parser.parse_args())
 
 # set up variables
@@ -96,14 +98,20 @@ def multiChannelDice(pred, gt, channels):
 def calculateMetrics():
 
     # get a list of male and female IDs
-    f = open(os.path.join(root_dir, "splits", "set1_splits.pkl"), "rb")
-    set_1_ids = pkl.load(f)
-    f.close()
+    #f = open(os.path.join(root_dir, "splits", "set1_splits.pkl"), "rb")
+    #set_1_ids = pkl.load(f)
+    #f.close()
 
-    ids_ts = set_1_ids["test"]
-    n_ids = len(ids_ts)
-    idx_women = ids_ts[0:int(n_ids / 2)]
-    idx_men = ids_ts[int(n_ids / 2):]
+    #ids_ts = set_1_ids["test"]
+    #n_ids = len(ids_ts)
+    #idx_women = ids_ts[0:int(n_ids / 2)]
+    #idx_men = ids_ts[int(n_ids / 2):]
+
+    df_w = pd.read_csv(os.path.join(root_dir, "meta_f.csv"))
+    idx_women = list(df_w["image_id"].values)
+
+    df_m = pd.read_csv(os.path.join(root_dir, "meta_m.csv"))
+    idx_men = list(df_m["image_id"].values)
 
     dice_men = []
     dice_women = []
@@ -135,12 +143,12 @@ def calculateMetrics():
 
             vol_pred, vol_gt = getVolume(pred, gt)
 
-            if int(case[5:9]) in idx_women:
+            if ("s" + case[5:9]) in idx_women:
                 dice_women.append(dice)
                 hd_women.append(hd)
                 vol_pred_women.append(vol_pred)
                 vol_gt_women.append(vol_gt)
-            elif int(case[5:9]) in idx_men:
+            elif ("s" + case[5:9]) in idx_men:
                 dice_men.append(dice)
                 hd_men.append(hd)
                 vol_pred_men.append(vol_pred)
