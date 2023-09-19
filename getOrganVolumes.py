@@ -13,9 +13,9 @@ import seaborn as sns
 local = False
 
 if local:
-    root_dir = "/Users/katecevora/Documents/PhD/data/TotalSegmentator/TotalSegmentator"
+    root_dir = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
 else:
-    root_dir = "/rds/general/user/kc2322/home/data/TotalSegmentator/TotalSegmentator"
+    root_dir = "/rds/general/user/kc2322/home/data/TotalSegmentator"
 
 lblu = "#add9f4"
 lred = "#f36860"
