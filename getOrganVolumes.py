@@ -10,7 +10,7 @@ from scipy import stats
 from matplotlib.patches import Polygon
 import seaborn as sns
 
-local = True
+local = False
 
 if local:
     root_dir = "/Users/katecevora/Documents/PhD/data/TotalSegmentator/TotalSegmentator"
