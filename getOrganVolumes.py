@@ -10,7 +10,7 @@ from scipy import stats
 from matplotlib.patches import Polygon
 import seaborn as sns
 
-local = False
+local = True
 
 if local:
     root_dir = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
@@ -37,13 +37,13 @@ def calculate_volumes():
     volumes_f = []
     volumes_m = []
 
-    # get a list of the files in the gt seg folder
-    f_names = os.listdir(gt_seg_dir)
-
     # open the metadata
-    meta = pd.read_csv(meta_data_path)
+    meta = pd.read_csv(meta_data_path, sep=";")
     ids_m = np.array(meta[meta["gender"] == "m"]["image_id"].values)
     ids_f = np.array(meta[meta["gender"] == "f"]["image_id"].values)
+
+    # get a list of the files in the gt seg folder
+    f_names = os.listdir(gt_seg_dir)
 
     for f in f_names:
         if f.endswith(".nii.gz"):
