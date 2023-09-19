@@ -13,7 +13,7 @@ import argparse
 
 # argparse
 parser = argparse.ArgumentParser(description="Just an example", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-l", "--local", default=True, help="Flag for running locally")
+parser.add_argument("-l", "--local", default=False, help="Flag for running locally")
 args = vars(parser.parse_args())
 
 # set up variables
