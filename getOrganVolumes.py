@@ -9,8 +9,15 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from matplotlib.patches import Polygon
 import seaborn as sns
+import argparse
 
-local = True
+# argparse
+parser = argparse.ArgumentParser(description="Just an example", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("-l", "--local", default=True, help="Flag for running locally")
+args = vars(parser.parse_args())
+
+# set up variables
+local = args['local']
 
 if local:
     root_dir = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
