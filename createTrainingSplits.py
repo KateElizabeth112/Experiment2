@@ -56,6 +56,8 @@ def generate_folds():
 
     for f in range(5):
         ts = np.concatenate((blocks_f[f], blocks_m[f]), axis=0)
+        print(blocks_f[0:f].shape)
+        print(blocks_f[f+1:5].shape)
         tr1_f = np.concatenate((blocks_f[0:f], blocks_f[f+1:5]), axis=0)
         tr1_m = np.concatenate((blocks_m[0:f], blocks_m[f+1:5]), axis=0)
         tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
