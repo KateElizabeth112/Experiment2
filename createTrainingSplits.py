@@ -53,7 +53,7 @@ def generate_folds():
         blocks_m.append(ids_m[int(i * block_size):int((i + 1) * block_size)])
 
     # create 5 training folds for three datasets
-    ts = np.concatenate((blocks_f[0], blocks_m[0]), axis=1)
+    ts = np.concatenate((blocks_f[0], blocks_m[0]), axis=0)
     tr1_f = np.concatenate(blocks_f[1:5], axis=0)
     tr1_m = np.concatenate(blocks_m[1:5], axis=0)
     tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
@@ -64,7 +64,7 @@ def generate_folds():
     print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
 
     for f in range(1, 4):
-        ts = np.concatenate((blocks_f[f], blocks_m[f]), axis=1)
+        ts = np.concatenate((blocks_f[f], blocks_m[f]), axis=0)
         tr1_f = np.concatenate((blocks_f[0:f] + blocks_f[f+1:5]), axis=0)
         tr1_m = np.concatenate((blocks_m[0:f] + blocks_m[f+1:5]), axis=0)
         tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
@@ -74,7 +74,7 @@ def generate_folds():
 
         print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
 
-    ts = np.concatenate((blocks_f[4], blocks_m[4]), axis=1)
+    ts = np.concatenate((blocks_f[4], blocks_m[4]), axis=0)
     tr1_f = np.concatenate(blocks_f[:4], axis=0)
     tr1_m = np.concatenate(blocks_m[:4], axis=0)
     tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
