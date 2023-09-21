@@ -22,6 +22,93 @@ output_datasets = ["Dataset401_Set1", "Dataset402_Set2", "Dataset403_Set3"]
 splits = ["set401_splits.pkl", "set402_splits.pkl", "set403_splits.pkl"]
 
 
+def generate_folds():
+    f = open(os.path.join(root_folder, "info.pkl"), "rb")
+    info = pkl.load(f)
+    f.close()
+
+    patients = np.array(info["patients"])
+    genders = np.array(info["genders"])       # male = 0, female = 1
+
+    # split into male and female IDs
+    ids_m = patients[genders == 0]
+    ids_f = patients[genders == 1]
+
+    # randomly shuffle indices
+    np.random.shuffle(ids_m)
+    np.random.shuffle(ids_f)
+
+    block_size = np.floor(ids_f.shape[0] / 9)
+    dataset_size = int(block_size * 9)
+
+    print("Dataset size: {}".format(dataset_size))
+
+    # create 9 training blocks overall (these will form 5 folds)
+    blocks_f = []
+    blocks_m = []
+
+    for i in range(9):
+        blocks_f.append(ids_f[i*block_size:(i+1)*block_size])
+        blocks_m.append(ids_m[i * block_size:(i + 1) * block_size])
+
+    # create 5 training folds for three datasets
+    # fold 0
+    ts = np.concatenate((blocks_f[0], blocks_m[0]), axis=0)
+    tr1_f = np.concatenate((blocks_f[0:0], blocks_f[1:5]), axis=0)
+    tr1_m = np.concatenate((blocks_m[0:0], blocks_m[1:5]), axis=0)
+    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
+
+    tr2 = np.concatenate((blocks_f[0:0], blocks_f[1:9]), axis=0)
+    tr3 = np.concatenate((blocks_m[0:0], blocks_m[1:9]), axis=0)
+
+    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
+
+    # fold 1
+    ts = np.concatenate((blocks_f[1], blocks_m[1]), axis=0)
+    tr1_f = np.concatenate((blocks_f[0:1], blocks_f[2:5]), axis=0)
+    tr1_m = np.concatenate((blocks_m[0:1], blocks_m[2:5]), axis=0)
+    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
+
+    tr2 = np.concatenate((blocks_f[0:1], blocks_f[2:9]), axis=0)
+    tr3 = np.concatenate((blocks_m[0:1], blocks_m[2:9]), axis=0)
+
+    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
+
+    # fold 2
+    ts = np.concatenate((blocks_f[2], blocks_m[2]), axis=0)
+    tr1_f = np.concatenate((blocks_f[0:2], blocks_f[3:5]), axis=0)
+    tr1_m = np.concatenate((blocks_m[0:2], blocks_m[3:5]), axis=0)
+    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
+
+    tr2 = np.concatenate((blocks_f[0:2], blocks_f[3:9]), axis=0)
+    tr3 = np.concatenate((blocks_m[0:2], blocks_m[3:9]), axis=0)
+
+    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
+
+    # fold 3
+    ts = np.concatenate((blocks_f[3], blocks_m[3]), axis=0)
+    tr1_f = np.concatenate((blocks_f[0:3], blocks_f[4:5]), axis=0)
+    tr1_m = np.concatenate((blocks_m[0:3], blocks_m[4:5]), axis=0)
+    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
+
+    tr2 = np.concatenate((blocks_f[0:3], blocks_f[4:9]), axis=0)
+    tr3 = np.concatenate((blocks_m[0:3], blocks_m[4:9]), axis=0)
+
+    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
+
+    # fold 4
+    ts = np.concatenate((blocks_f[4], blocks_m[4]), axis=0)
+    tr1_f = np.concatenate((blocks_f[0:4], blocks_f[5:5]), axis=0)
+    tr1_m = np.concatenate((blocks_m[0:4], blocks_m[5:5]), axis=0)
+    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
+
+    tr2 = np.concatenate((blocks_f[0:4], blocks_f[5:9]), axis=0)
+    tr3 = np.concatenate((blocks_m[0:4], blocks_m[5:9]), axis=0)
+
+    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
+
+
+
 def generate_sets():
     f = open(os.path.join(input_folder, "info.pkl"), "rb")
     info = pkl.load(f)
@@ -115,19 +202,20 @@ def copy_images(dataset_name, ids_tr, ids_ts):
 
 
 def main():
-    generate_sets()
+    #generate_sets()
+    generate_folds()
 
     # Sort the case IDs according to the sets
-    for j in range(3):
-        f = open(os.path.join(splits_folder, splits[j]), "rb")
-        ids = pkl.load(f)
-        f.close()
+    #for j in range(3):
+        #f = open(os.path.join(splits_folder, splits[j]), "rb")
+        #ids = pkl.load(f)
+        #f.close()
 
-        ids_tr = ids["train"]
-        ids_ts = ids["test"]
+        #ids_tr = ids["train"]
+        #ids_ts = ids["test"]
 
-        print("Working on Set {}....".format(j))
-        copy_images(output_datasets[j], ids_tr, ids_ts)
+        #print("Working on Set {}....".format(j))
+        #copy_images(output_datasets[j], ids_tr, ids_ts)
 
 
 
