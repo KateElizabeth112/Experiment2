@@ -27,7 +27,7 @@ echo $nnUNet_results
 python3 generateDatasetJson.py -r $ROOT_DIR -n $TASK -tc 304
 
 # Plan and preprocess data
-nnUNetv2_plan_and_preprocess -d 501 -c 3d_fullres -np 3 --verify_dataset_integrity
+#nnUNetv2_plan_and_preprocess -d 501 -c 3d_fullres -np 3 --verify_dataset_integrity
 
 # Train
-nnUNetv2_train 501 3d_fullres all
+#nnUNetv2_train 501 3d_fullres all
