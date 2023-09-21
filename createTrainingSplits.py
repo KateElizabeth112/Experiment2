@@ -18,8 +18,7 @@ input_images_folder = os.path.join(input_folder, "imagesTr")
 input_labels_folder = os.path.join(input_folder, "labelsTr")
 splits_folder = os.path.join(root_folder, "splits")
 
-output_datasets = ["Dataset401_Set1", "Dataset402_Set2", "Dataset403_Set3"]
-splits = ["set401_splits.pkl", "set402_splits.pkl", "set403_splits.pkl"]
+output_datasets = ["Dataset501", "Dataset502", "Dataset503"]
 
 
 def generate_folds():
@@ -61,6 +60,14 @@ def generate_folds():
     tr2 = np.concatenate(blocks_f[1:9], axis=0)
     tr3 = np.concatenate(blocks_m[1:9], axis=0)
 
+    set_1_ids = {"train": tr1, "test": ts}
+    set_2_ids = {"train": tr2, "test": ts}
+    set_3_ids = {"train": tr3, "test": ts}
+
+    f = open(os.path.join(splits_folder, "fold_0.pkl"), "wb")
+    pkl.dump([set_1_ids, set_2_ids, set_3_ids], f)
+    f.close()
+
     print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
 
     for f in range(1, 4):
@@ -72,6 +79,14 @@ def generate_folds():
         tr2 = np.concatenate((blocks_f[0:f] + blocks_f[f+1:9]), axis=0)
         tr3 = np.concatenate((blocks_m[0:f] + blocks_m[f+1:9]), axis=0)
 
+        set_1_ids = {"train": tr1, "test": ts}
+        set_2_ids = {"train": tr2, "test": ts}
+        set_3_ids = {"train": tr3, "test": ts}
+
+        f = open(os.path.join(splits_folder, "fold_{}.pkl".format(f)), "wb")
+        pkl.dump([set_1_ids, set_2_ids, set_3_ids], f)
+        f.close()
+
         print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
 
     ts = np.concatenate((blocks_f[4], blocks_m[4]), axis=0)
@@ -82,61 +97,12 @@ def generate_folds():
     tr2 = np.concatenate((blocks_f[0:4] + blocks_f[5:9]), axis=0)
     tr3 = np.concatenate((blocks_m[0:4] + blocks_m[5:9]), axis=0)
 
-    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
+    set_1_ids = {"train": tr1, "test": ts}
+    set_2_ids = {"train": tr2, "test": ts}
+    set_3_ids = {"train": tr3, "test": ts}
 
-
-def generate_sets():
-    f = open(os.path.join(input_folder, "info.pkl"), "rb")
-    info = pkl.load(f)
-    f.close()
-
-    patients = np.array(info["patients"])
-    genders = np.array(info["genders"])       # male = 0, female = 1
-
-    # split into male and female IDs
-    ids_m = patients[genders == 0]
-    ids_f = patients[genders == 1]
-
-    # randomly shuffle indices
-    np.random.shuffle(ids_m)
-    np.random.shuffle(ids_f)
-
-    # define training and test set size
-    n_f = ids_f.shape[0]
-    ts_size = 100
-    tr_size = int(n_f - (ts_size / 2))
-
-    print("Training set size: {}".format(tr_size))
-    print("Test set size: {}".format(ts_size))
-
-    ids_tr_m = ids_m[:tr_size]
-    ids_ts_m = ids_m[tr_size:tr_size + int(ts_size / 2)]
-    ids_tr_f = ids_f[:tr_size]
-    ids_ts_f = ids_f[tr_size:]
-
-    ids_ts = np.concatenate((ids_ts_f, ids_ts_m), axis=0)
-
-    # Set 1 train: 225 men, 225 women
-    # Set 1 test: 49 men, 49 women
-    ids_tr = np.concatenate((ids_tr_f[:int(tr_size / 2)], ids_tr_m[:int(tr_size / 2)]), axis=0)
-
-    set_1_ids = {"train": ids_tr, "test": ids_ts}
-    f = open(os.path.join(splits_folder, splits[0]), "wb")
-    pkl.dump(set_1_ids, f)
-    f.close()
-
-    # Set 2 train: 0 men, 450 women
-    # Set 2 test: 49 men, 49 women
-    set_2_ids = {"train": ids_tr_f, "test": ids_ts}
-    f = open(os.path.join(splits_folder, splits[1]), "wb")
-    pkl.dump(set_2_ids, f)
-    f.close()
-
-    # Set 3 train: 450 men, 0 women
-    # Set 3 test: 49 men, 49 women
-    set_3_ids = {"train": ids_tr_m, "test": ids_ts}
-    f = open(os.path.join(splits_folder, splits[2]), "wb")
-    pkl.dump(set_3_ids, f)
+    f = open(os.path.join(splits_folder, "fold_4.pkl"), "wb")
+    pkl.dump([set_1_ids, set_2_ids, set_3_ids], f)
     f.close()
 
 
@@ -178,20 +144,21 @@ def copy_images(dataset_name, ids_tr, ids_ts):
 
 
 def main():
-    #generate_sets()
     generate_folds()
 
     # Sort the case IDs according to the sets
-    #for j in range(3):
-        #f = open(os.path.join(splits_folder, splits[j]), "rb")
-        #ids = pkl.load(f)
-        #f.close()
+    f = open(os.path.join(splits_folder, "fold_0.pkl"), "rb")
+    ids = pkl.load(f)
+    f.close()
 
-        #ids_tr = ids["train"]
-        #ids_ts = ids["test"]
+    for j in range(3):
+        ids_tr = ids[j]["train"]
+        ids_ts = ids[j]["test"]
 
-        #print("Working on Set {}....".format(j))
-        #copy_images(output_datasets[j], ids_tr, ids_ts)
+        name = output_datasets[j] + "_Fold0"
+
+        print("Working on Set {}....".format(name))
+        copy_images(name, ids_tr, ids_ts)
 
 
 
