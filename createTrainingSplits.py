@@ -49,21 +49,40 @@ def generate_folds():
     blocks_m = []
 
     for i in range(9):
-        blocks_f.append(ids_f[int(i * block_size):int((i + 1) * block_size)].flatten())
-        blocks_m.append(ids_m[int(i * block_size):int((i + 1) * block_size)].flatten())
+        blocks_f.append(ids_f[int(i * block_size):int((i + 1) * block_size)])
+        blocks_m.append(ids_m[int(i * block_size):int((i + 1) * block_size)])
 
     # create 5 training folds for three datasets
+    ts = np.concatenate((blocks_f[0], blocks_m[0]), axis=1)
+    tr1_f = np.concatenate(blocks_f[1:5], axis=0)
+    tr1_m = np.concatenate(blocks_m[1:5], axis=0)
+    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
 
-    for f in range(0, 5):
+    tr2 = np.concatenate(blocks_f[1:9], axis=0)
+    tr3 = np.concatenate(blocks_m[1:9], axis=0)
+
+    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
+
+    for f in range(1, 4):
         ts = np.concatenate((blocks_f[f], blocks_m[f]), axis=1)
-        tr1_f = np.concatenate((np.array(blocks_f[0:f]), np.array(blocks_f[f+1:5])), axis=1)
-        tr1_m = np.concatenate((np.array(blocks_m[0:f]), np.array(blocks_m[f+1:5])), axis=1)
-        tr1 = np.concatenate((tr1_f, tr1_m), axis=1)
+        tr1_f = np.concatenate((blocks_f[0:f] + blocks_f[f+1:5]), axis=0)
+        tr1_m = np.concatenate((blocks_m[0:f] + blocks_m[f+1:5]), axis=0)
+        tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
 
-        tr2 = np.concatenate((np.array(blocks_f[0:f]), np.array(blocks_f[f+1:9])), axis=1)
-        tr3 = np.concatenate((np.array(blocks_m[0:f]), np.array(blocks_m[f+1:9])), axis=1)
+        tr2 = np.concatenate((blocks_f[0:f] + blocks_f[f+1:9]), axis=0)
+        tr3 = np.concatenate((blocks_m[0:f] + blocks_m[f+1:9]), axis=0)
 
         print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
+
+    ts = np.concatenate((blocks_f[4], blocks_m[4]), axis=1)
+    tr1_f = np.concatenate(blocks_f[:4], axis=0)
+    tr1_m = np.concatenate(blocks_m[:4], axis=0)
+    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
+
+    tr2 = np.concatenate((blocks_f[0:4] + blocks_f[5:9]), axis=0)
+    tr3 = np.concatenate((blocks_m[0:4] + blocks_m[5:9]), axis=0)
+
+    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
 
 
 def generate_sets():
