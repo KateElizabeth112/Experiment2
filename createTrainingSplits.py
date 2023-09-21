@@ -49,8 +49,8 @@ def generate_folds():
     blocks_m = []
 
     for i in range(9):
-        blocks_f.append(np.flatten(ids_f[int(i * block_size):int((i + 1) * block_size)]))
-        blocks_m.append(np.flatten(ids_m[int(i * block_size):int((i + 1) * block_size)]))
+        blocks_f.append(ids_f[int(i * block_size):int((i + 1) * block_size)].flatten())
+        blocks_m.append(ids_m[int(i * block_size):int((i + 1) * block_size)].flatten())
 
     # create 5 training folds for three datasets
 
