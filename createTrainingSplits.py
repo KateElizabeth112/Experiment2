@@ -39,17 +39,18 @@ def generate_folds():
     np.random.shuffle(ids_f)
 
     block_size = np.floor(ids_f.shape[0] / 9)
-    dataset_size = int(block_size * 9)
+    dataset_size = int(block_size * 8)
 
     print("Dataset size: {}".format(dataset_size))
+    print("Test set size per fold: {}".format(block_size * 2))
 
     # create 9 training blocks overall (these will form 5 folds)
     blocks_f = []
     blocks_m = []
 
     for i in range(9):
-        blocks_f.append(ids_f[i*block_size:(i+1)*block_size])
-        blocks_m.append(ids_m[i * block_size:(i + 1) * block_size])
+        blocks_f.append(ids_f[int(i * block_size):int((i + 1) * block_size)])
+        blocks_m.append(ids_m[int(i * block_size):int((i + 1) * block_size)])
 
     # create 5 training folds for three datasets
 
