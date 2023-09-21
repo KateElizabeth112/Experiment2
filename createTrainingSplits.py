@@ -23,7 +23,7 @@ splits = ["set401_splits.pkl", "set402_splits.pkl", "set403_splits.pkl"]
 
 
 def generate_folds():
-    f = open(os.path.join(root_folder, "info.pkl"), "rb")
+    f = open(os.path.join(input_folder, "info.pkl"), "rb")
     info = pkl.load(f)
     f.close()
 
@@ -52,61 +52,17 @@ def generate_folds():
         blocks_m.append(ids_m[i * block_size:(i + 1) * block_size])
 
     # create 5 training folds for three datasets
-    # fold 0
-    ts = np.concatenate((blocks_f[0], blocks_m[0]), axis=0)
-    tr1_f = np.concatenate((blocks_f[0:0], blocks_f[1:5]), axis=0)
-    tr1_m = np.concatenate((blocks_m[0:0], blocks_m[1:5]), axis=0)
-    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
 
-    tr2 = np.concatenate((blocks_f[0:0], blocks_f[1:9]), axis=0)
-    tr3 = np.concatenate((blocks_m[0:0], blocks_m[1:9]), axis=0)
+    for f in range(5):
+        ts = np.concatenate((blocks_f[f], blocks_m[f]), axis=0)
+        tr1_f = np.concatenate((blocks_f[0:f], blocks_f[f+1:5]), axis=0)
+        tr1_m = np.concatenate((blocks_m[0:f], blocks_m[f+1:5]), axis=0)
+        tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
 
-    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
+        tr2 = np.concatenate((blocks_f[0:f], blocks_f[f+1:9]), axis=0)
+        tr3 = np.concatenate((blocks_m[0:f], blocks_m[f+1:9]), axis=0)
 
-    # fold 1
-    ts = np.concatenate((blocks_f[1], blocks_m[1]), axis=0)
-    tr1_f = np.concatenate((blocks_f[0:1], blocks_f[2:5]), axis=0)
-    tr1_m = np.concatenate((blocks_m[0:1], blocks_m[2:5]), axis=0)
-    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
-
-    tr2 = np.concatenate((blocks_f[0:1], blocks_f[2:9]), axis=0)
-    tr3 = np.concatenate((blocks_m[0:1], blocks_m[2:9]), axis=0)
-
-    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
-
-    # fold 2
-    ts = np.concatenate((blocks_f[2], blocks_m[2]), axis=0)
-    tr1_f = np.concatenate((blocks_f[0:2], blocks_f[3:5]), axis=0)
-    tr1_m = np.concatenate((blocks_m[0:2], blocks_m[3:5]), axis=0)
-    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
-
-    tr2 = np.concatenate((blocks_f[0:2], blocks_f[3:9]), axis=0)
-    tr3 = np.concatenate((blocks_m[0:2], blocks_m[3:9]), axis=0)
-
-    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
-
-    # fold 3
-    ts = np.concatenate((blocks_f[3], blocks_m[3]), axis=0)
-    tr1_f = np.concatenate((blocks_f[0:3], blocks_f[4:5]), axis=0)
-    tr1_m = np.concatenate((blocks_m[0:3], blocks_m[4:5]), axis=0)
-    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
-
-    tr2 = np.concatenate((blocks_f[0:3], blocks_f[4:9]), axis=0)
-    tr3 = np.concatenate((blocks_m[0:3], blocks_m[4:9]), axis=0)
-
-    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
-
-    # fold 4
-    ts = np.concatenate((blocks_f[4], blocks_m[4]), axis=0)
-    tr1_f = np.concatenate((blocks_f[0:4], blocks_f[5:5]), axis=0)
-    tr1_m = np.concatenate((blocks_m[0:4], blocks_m[5:5]), axis=0)
-    tr1 = np.concatenate((tr1_f, tr1_m), axis=0)
-
-    tr2 = np.concatenate((blocks_f[0:4], blocks_f[5:9]), axis=0)
-    tr3 = np.concatenate((blocks_m[0:4], blocks_m[5:9]), axis=0)
-
-    print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
-
+        print(tr1.shape, tr2.shape, tr3.shape, ts.shape)
 
 
 def generate_sets():
