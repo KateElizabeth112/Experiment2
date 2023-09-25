@@ -147,7 +147,8 @@ def main():
     #generate_folds()
 
     # Sort the case IDs according to the sets
-    f = open(os.path.join(splits_folder, "fold_1.pkl"), "rb")
+    fold = 1
+    f = open(os.path.join(splits_folder, "fold_{}.pkl".format(fold)), "rb")
     ids = pkl.load(f)
     f.close()
 
@@ -155,7 +156,7 @@ def main():
         ids_tr = ids[j]["train"]
         ids_ts = ids[j]["test"]
 
-        name = output_datasets[j] + "_Fold0"
+        name = output_datasets[j] + "_Fold{}".format(fold)
 
         print("Working on Set {}....".format(name))
         copy_images(name, ids_tr, ids_ts)
