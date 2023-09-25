@@ -144,10 +144,10 @@ def copy_images(dataset_name, ids_tr, ids_ts):
 
 
 def main():
-    generate_folds()
+    #generate_folds()
 
     # Sort the case IDs according to the sets
-    f = open(os.path.join(splits_folder, "fold_0.pkl"), "rb")
+    f = open(os.path.join(splits_folder, "fold_1.pkl"), "rb")
     ids = pkl.load(f)
     f.close()
 

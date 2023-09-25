@@ -17,7 +17,7 @@ parser.add_argument("-l", "--local", default=False, help="Flag for running local
 args = vars(parser.parse_args())
 
 # set up variables
-local = False
+local = True
 
 if local:
     root_dir = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
@@ -246,7 +246,7 @@ def boxPlotSeaborn():
     normalised_volume = []
     gender = []
 
-    for i in range(1, len(labels)-1):
+    for i in range(1, len(labels)):
         organ = organs[i]
 
         volumes_m_i = volumes_m[:, i-1]
@@ -304,15 +304,15 @@ def significanceTesting():
         res = stats.ttest_ind(volumes_m[:, i-1], volumes_f[:, i-1], equal_var=False)
 
         # save difference in mean, difference in mean as a proportion of the average volume, and p-value
-        print("{0}: {1:.0f} mm^3, {2:.2f} %, p-value {3:.2f}".format(organ, v_diff, v_diff_prop, res[1]))
+        print("{0}: {1:.0f} mm^3, {2:.2f} %, p-value {3:.3f}".format(organ, v_diff, v_diff_prop, res[1]))
 
 
 
 def main():
-    calculate_volumes()
+    #calculate_volumes()
     #plotVolumesBoxAndWhiskers()
     #boxPlotSeaborn()
-    #significanceTesting()
+    significanceTesting()
 
 
 

@@ -4,6 +4,7 @@ import pickle as pkl
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
+from scipy import stats
 
 root_dir = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
 
@@ -17,7 +18,6 @@ labels = {"background": 0,
           "pancreas": 4}
 
 n_channels = int(len(labels))
-
 
 
 def plotDice(dice_men1, dice_women1, dice_men2, dice_women2, dice_men3, dice_women3, organ, save_path):
@@ -106,6 +106,57 @@ def plotDice(dice_men1, dice_women1, dice_men2, dice_women2, dice_men3, dice_wom
     plt.savefig(save_path)
     #plt.show()
 
+
+
+def printDice(dice_men1, dice_women1, dice_men2, dice_women2, dice_men3, dice_women3):
+    # Calculate the deltas from the baseline experiment
+    organs = list(labels.keys())
+
+    for i in range(1, n_channels):
+        organ = organs[i]
+
+        # Delete NaNs
+        dice_men1_i = dice_men1[:, i][~np.isnan(dice_men1[:, i])]
+        dice_women1_i = dice_women1[:, i][~np.isnan(dice_women1[:, i])]
+        dice_men2_i = dice_men2[:, i][~np.isnan(dice_men2[:, i])]
+        dice_women2_i = dice_women2[:, i][~np.isnan(dice_women2[:, i])]
+        dice_men3_i = dice_men3[:, i][~np.isnan(dice_men3[:, i])]
+        dice_women3_i = dice_women3[:, i][~np.isnan(dice_women3[:, i])]
+
+        # Baseline results
+        av_dice_men1 = np.mean(dice_men1_i)
+        av_dice_women1 = np.mean(dice_women1_i)
+
+        # Experiment 2 (all female training set)
+        av_dice_men2 = np.mean(dice_men2_i)
+        av_dice_women2 = np.mean(dice_women2_i)
+
+        delta_men2 = -(av_dice_men1 - av_dice_men2) * 100
+        delta_women2 = -(av_dice_women1 - av_dice_women2) * 100
+
+        (_, p_men2) = stats.ttest_ind(dice_men1_i, dice_men2_i, equal_var=False)
+        (_, p_women2) = stats.ttest_ind(dice_women1_i, dice_women2_i, equal_var=False)
+
+        # Experiment 3 (male training set)
+        av_dice_men3 = np.mean(dice_men3_i)
+        av_dice_women3 = np.mean(dice_women3_i)
+
+        delta_men3 = -(av_dice_men1 - av_dice_men3) * 100
+        delta_women3 = -(av_dice_women1 - av_dice_women3) * 100
+
+        (_, p_men3) = stats.ttest_ind(dice_men1_i, dice_men3_i, equal_var=False)
+        (_, p_women3) = stats.ttest_ind(dice_women1_i, dice_women3_i, equal_var=False)
+
+        print(organ + " & {0:.2f} ({1:.2f}) & {2:.2f} ({3:.2f}) & {4:.2f} ({5:.2f}) & {6:.2f} ({7:.2f})".format(delta_men2,
+                                                                                                          p_men2,
+                                                                                                          delta_men3,
+                                                                                                          p_men3,
+                                                                                                          delta_women2,
+                                                                                                          p_women2,
+                                                                                                          delta_women3,
+                                                                                                          p_women3) + r" \\")
+
+
 def main():
     # first get relevant metrics from all three experiments
     experiments = ["Dataset301_Set1", "Dataset302_Set2", "Dataset303_Set3"]
@@ -136,7 +187,7 @@ def main():
 
     # Now make some plots
     organs = list(labels.keys())
-
+    """
     for i in range(1, n_channels):
         organ = organs[i]
 
@@ -153,6 +204,9 @@ def main():
                  dice_women3[:, i],
                  organ,
                  save_path)
+    """
+    # Now process dice scores for all three experiments into a tabular format
+    printDice(dice_men1, dice_women1, dice_men2, dice_women2, dice_men3, dice_women3)
 
 
 if __name__ == "__main__":
