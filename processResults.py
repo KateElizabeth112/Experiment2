@@ -16,7 +16,7 @@ args = vars(parser.parse_args())
 # set up variables
 task = args["dataset"]
 
-local = True
+local = False
 if local:
     root_dir = "/Users/katecevora/Documents/PhD/data/TotalSegmentator"
 else:
