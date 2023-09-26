@@ -147,19 +147,21 @@ def main():
     #generate_folds()
 
     # Sort the case IDs according to the sets
-    fold = 1
-    f = open(os.path.join(splits_folder, "fold_{}.pkl".format(fold)), "rb")
-    ids = pkl.load(f)
-    f.close()
+    folds = [2, 3, 4]
+    
+    for fold in folds:
+        f = open(os.path.join(splits_folder, "fold_{}.pkl".format(fold)), "rb")
+        ids = pkl.load(f)
+        f.close()
 
-    for j in range(3):
-        ids_tr = ids[j]["train"]
-        ids_ts = ids[j]["test"]
+        for j in range(3):
+            ids_tr = ids[j]["train"]
+            ids_ts = ids[j]["test"]
 
-        name = output_datasets[j] + "_Fold{}".format(fold)
+            name = output_datasets[j] + "_Fold{}".format(fold)
 
-        print("Working on Set {}....".format(name))
-        copy_images(name, ids_tr, ids_ts)
+            print("Working on Set {}....".format(name))
+            copy_images(name, ids_tr, ids_ts)
 
 
 
