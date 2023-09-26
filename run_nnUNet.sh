@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -l walltime=48:00:00
 #PBS -l select=1:ncpus=12:mem=64gb:ngpus=1:gpu_type=RTX6000
-#PBS -N nnUNet_701_fold3
+#PBS -N nnUNet_702_fold3
 
 cd ${PBS_O_WORKDIR}
 
