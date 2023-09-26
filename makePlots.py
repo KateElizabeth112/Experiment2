@@ -159,7 +159,7 @@ def printDice(dice_men1, dice_women1, dice_men2, dice_women2, dice_men3, dice_wo
 
 def main():
     # first get relevant metrics from all three experiments
-    experiments = ["Dataset301_Set1", "Dataset302_Set2", "Dataset303_Set3"]
+    experiments = ["Dataset501_Fold0", "Dataset502_Fold0", "Dataset503_Fold0"]
 
     # Experiment 1
     f = open(os.path.join(root_dir, "inference", experiments[0], "all", "dice_and_hd.pkl"), "rb")
@@ -187,14 +187,14 @@ def main():
 
     # Now make some plots
     organs = list(labels.keys())
-    """
+
     for i in range(1, n_channels):
         organ = organs[i]
 
         if organ == "prostate/uterus":
             organ = "prostate or uterus"
 
-        save_path = os.path.join(root_dir, "plots", "{}_dice.png".format(organ))
+        save_path = os.path.join(root_dir, "plots", "Dataset500", "{}_dice.png".format(organ))
 
         plotDice(dice_men1[:, i],
                  dice_women1[:, i],
@@ -204,7 +204,7 @@ def main():
                  dice_women3[:, i],
                  organ,
                  save_path)
-    """
+
     # Now process dice scores for all three experiments into a tabular format
     printDice(dice_men1, dice_women1, dice_men2, dice_women2, dice_men3, dice_women3)
 
