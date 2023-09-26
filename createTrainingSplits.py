@@ -148,7 +148,7 @@ def main():
 
     # Sort the case IDs according to the sets
     folds = [2, 3, 4]
-    
+
     for fold in folds:
         f = open(os.path.join(splits_folder, "fold_{}.pkl".format(fold)), "rb")
         ids = pkl.load(f)
