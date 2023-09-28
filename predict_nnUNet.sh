@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -l walltime=10:00:00
 #PBS -l select=1:ncpus=12:mem=120gb:ngpus=1:gpu_type=RTX6000
-#PBS -N nnUNet_predict_800
+#PBS -N nnUNet_predict_700
 
 cd ${PBS_O_WORKDIR}
 
@@ -15,8 +15,8 @@ python -c "import torch;print(torch.cuda.is_available())"
 # Set environment variables
 ROOT_DIR='/rds/general/user/kc2322/home/data/TotalSegmentator/'
 
-datasets=("Dataset801_Fold3" "Dataset802_Fold3")
-tasks=(801 802)
+datasets=("Dataset701_Fold2" "Dataset702_Fold2")
+tasks=(701 702)
 
 export nnUNet_raw=$ROOT_DIR"nnUNet_raw"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
