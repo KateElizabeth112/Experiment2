@@ -15,14 +15,14 @@ python -c "import torch;print(torch.cuda.is_available())"
 # Set environment variables
 ROOT_DIR='/rds/general/user/kc2322/home/data/TotalSegmentator/'
 
-datasets=("Dataset901_Fold4", "Dataset902_Fold4", "Dataset903_Fold4")
-tasks=(901, 902, 903)
+datasets=("Dataset901_Fold4" "Dataset902_Fold4")
+tasks=(901 902)
 
 export nnUNet_raw=$ROOT_DIR"nnUNet_raw"
 export nnUNet_preprocessed=$ROOT_DIR"nnUNet_preprocessed"
 export nnUNet_results=$ROOT_DIR"nnUNet_results"
 
-for number in {0..2}; do
+for number in {0..1}; do
     DATASET=${datasets[number]}
     TASK=${tasks[number]}
 
