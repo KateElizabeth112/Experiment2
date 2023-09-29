@@ -157,9 +157,9 @@ def printDice(dice_men1, dice_women1, dice_men2, dice_women2, dice_men3, dice_wo
                                                                                                           p_women3) + r" \\")
 
 
-def main():
+
+def plot(experiments = ["Dataset501_Fold0", "Dataset502_Fold0", "Dataset503_Fold0"]):
     # first get relevant metrics from all three experiments
-    experiments = ["Dataset501_Fold0", "Dataset502_Fold0", "Dataset503_Fold0"]
 
     # Experiment 1
     f = open(os.path.join(root_dir, "inference", experiments[0], "all", "dice_and_hd.pkl"), "rb")
@@ -194,7 +194,7 @@ def main():
         if organ == "prostate/uterus":
             organ = "prostate or uterus"
 
-        save_path = os.path.join(root_dir, "plots", "Dataset500", "{}_dice.png".format(organ))
+        save_path = os.path.join(root_dir, "plots", "Final", "{}_dice.png".format(organ))
 
         plotDice(dice_men1[:, i],
                  dice_women1[:, i],
@@ -207,6 +207,66 @@ def main():
 
     # Now process dice scores for all three experiments into a tabular format
     printDice(dice_men1, dice_women1, dice_men2, dice_women2, dice_men3, dice_women3)
+
+
+
+def pullFoldsTogether():
+    # Combine results from all folds
+    # iterate over folds
+    for fold in range(5):
+        experiments = ["Dataset{}01_Fold{}".format((5+fold), fold),
+                       "Dataset{}02_Fold{}".format((5+fold), fold),
+                       "Dataset{}03_Fold{}".format((5+fold), fold)]
+
+        # Experiment 1
+        f = open(os.path.join(root_dir, "inference", experiments[0], "all", "dice_and_hd.pkl"), "rb")
+        metrics1 = pkl.load(f)
+        f.close()
+
+        # Experiment 2
+        f = open(os.path.join(root_dir, "inference", experiments[1], "all", "dice_and_hd.pkl"), "rb")
+        metrics2 = pkl.load(f)
+        f.close()
+
+        # Experiment 3
+        f = open(os.path.join(root_dir, "inference", experiments[2], "all", "dice_and_hd.pkl"), "rb")
+        metrics3 = pkl.load(f)
+        f.close()
+
+        if fold == 0:
+            dice_men1 = metrics1["dice_men"]
+            dice_women1 = metrics1["dice_women"]
+            dice_men2 = metrics2["dice_men"]
+            dice_women2 = metrics2["dice_women"]
+            dice_men3 = metrics3["dice_men"]
+            dice_women3 = metrics3["dice_women"]
+        else:
+            dice_men1 = np.concatenate((dice_men1, metrics1["dice_men"]), axis=0)
+            dice_women1 = np.concatenate((dice_women1, metrics1["dice_women"]), axis=0)
+            dice_men2 = np.concatenate((dice_men2, metrics2["dice_men"]), axis=0)
+            dice_women2 = np.concatenate((dice_women2, metrics2["dice_women"]), axis=0)
+            dice_men3 = np.concatenate((dice_men3, metrics3["dice_men"]), axis=0)
+            dice_women3 = np.concatenate((dice_women3, metrics3["dice_women"]), axis=0)
+
+    # Save results
+    f = open(os.path.join(root_dir, "inference", "Dataset1_FoldAll", "all", "dice_and_hd.pkl"), "wb")
+    pkl.dump({"dice_men": dice_men1, "dice_women": dice_women1}, f)
+    f.close()
+
+    f = open(os.path.join(root_dir, "inference", "Dataset2_FoldAll", "all", "dice_and_hd.pkl"), "wb")
+    pkl.dump({"dice_men": dice_men2, "dice_women": dice_women2}, f)
+    f.close()
+
+    f = open(os.path.join(root_dir, "inference", "Dataset3_FoldAll", "all", "dice_and_hd.pkl"), "wb")
+    pkl.dump({"dice_men": dice_men3, "dice_women": dice_women3}, f)
+    f.close()
+
+
+
+def main():
+    #pullFoldsTogether()
+
+    plot(experiments=["Dataset1_FoldAll", "Dataset2_FoldAll", "Dataset3_FoldAll"])
 
 
 if __name__ == "__main__":
